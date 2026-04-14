@@ -6,46 +6,44 @@
 <title>GanApp</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
-:root{
-  --bg:#0c0f08;--surf1:#131709;--surf2:#1a2010;
-  --border:#2b3520;--border2:#374428;
-  --acc:#9dbe2e;--acc2:#c8e655;--acc-dim:#4a6010;
-  --text:#dde8c0;--text2:#7d9450;--text3:#4a5c30;
-  --red:#d95f3b;--red-bg:#1e0e08;
-  --blue:#4fa3c8;--blue-bg:#081820;
-  --yellow:#c8a030;--yellow-bg:#1e1608;
-}
+:root{--bg:#0c0f08;--surf1:#131709;--surf2:#1a2010;--surf3:#212917;--border:#2b3520;--border2:#374428;--acc:#9dbe2e;--acc2:#c8e655;--acc-dim:#4a6010;--text:#dde8c0;--text2:#7d9450;--text3:#4a5c30;--red:#d95f3b;--red-bg:#1e0e08;--blue:#4fa3c8;--blue-bg:#081820;--yellow:#c8a030;--yellow-bg:#1e1608;--purple:#9b7fd4;--purple-bg:#140f20;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:14px;}
 .hidden{display:none!important;}
-
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
 .login-box{background:var(--surf1);border:1px solid var(--border);border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
 .login-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--acc2);margin-bottom:4px;}
 .login-sub{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:28px;}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
 .fl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;}
-.fi{background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:14px;outline:none;width:100%;}
+.fi{background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:14px;outline:none;width:100%;transition:.12s;}
 .fi:focus{border-color:var(--acc-dim);}
-.btn{padding:12px 18px;border-radius:9px;font-family:'Instrument Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.12s;width:100%;margin-top:6px;}
+select.fi{cursor:pointer;}
+textarea.fi{resize:vertical;min-height:64px;}
+.btn{padding:10px 16px;border-radius:9px;font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:.12s;}
 .btn-primary{background:var(--acc);color:var(--bg);}
 .btn-primary:hover{background:var(--acc2);}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);width:auto;padding:8px 14px;font-size:13px;margin-top:0;}
-.btn-sm{padding:6px 12px;font-size:12px;width:auto;margin-top:0;}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surf2);color:var(--text);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-block{width:100%;margin-top:6px;}
 .login-err{color:var(--red);font-size:12px;margin-top:8px;text-align:center;}
-
-/* APP */
 .app-wrap{display:flex;min-height:100vh;}
-
-/* SIDEBAR */
-.sidebar{width:220px;min-width:220px;background:var(--surf1);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:200;overflow-y:auto;transform:translateX(-100%);transition:.25s;}
+.sidebar{width:224px;min-width:224px;background:var(--surf1);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:200;overflow-y:auto;transform:translateX(-100%);transition:.25s;}
 .sidebar.open{transform:none;}
 @media(min-width:768px){.sidebar{transform:none;}}
 .brand{padding:16px 16px 14px;border-bottom:1px solid var(--border);}
 .brand-name{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--acc2);}
 .brand-sub{font-size:9px;color:var(--text3);letter-spacing:1.8px;text-transform:uppercase;margin-top:2px;}
+.estab-switcher{padding:10px 12px;border-bottom:1px solid var(--border);}
+.estab-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:5px;}
+.estab-current{background:var(--surf2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
+.estab-current:hover{border-color:var(--acc-dim);}
+.estab-name-sw{font-size:13px;font-weight:600;color:var(--text);}
+.estab-detail-sw{font-size:10px;color:var(--text3);margin-top:1px;}
 .nav-group{padding:6px 8px 0;}
 .nav-sep{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);padding:10px 10px 3px;}
 .nav-btn{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;transition:.12s;border:1px solid transparent;}
@@ -58,20 +56,15 @@ body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-s
 .eb-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
 .eb-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--acc);margin-top:2px;}
 .eb-sub{font-size:10px;color:var(--text3);margin-top:1px;}
-
-/* MAIN */
 .main{flex:1;margin-left:0;display:flex;flex-direction:column;}
-@media(min-width:768px){.main{margin-left:220px;}}
+@media(min-width:768px){.main{margin-left:224px;}}
 .topbar{background:var(--surf1);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .topbar-left{display:flex;align-items:center;gap:10px;}
-.menu-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px;}
+.menu-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;}
 @media(min-width:768px){.menu-btn{display:none;}}
 .topbar-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
-.topbar-right{display:flex;gap:8px;align-items:center;}
 .page{display:none;}.page.active{display:block;}
 .content{padding:16px;}
-
-/* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
 @media(min-width:600px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 .kpi{background:var(--surf1);border:1px solid var(--border);border-radius:10px;padding:13px 14px;}
@@ -83,8 +76,7 @@ body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-s
 .chip-r{background:var(--red-bg);color:var(--red);}
 .chip-b{background:var(--blue-bg);color:var(--blue);}
 .chip-y{background:var(--yellow-bg);color:var(--yellow);}
-
-/* TABLE */
+.chip-p{background:var(--purple-bg);color:var(--purple);}
 .tbl-wrap{background:var(--surf1);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;overflow-x:auto;}
 table{width:100%;border-collapse:collapse;min-width:400px;}
 thead{background:var(--surf2);}
@@ -93,33 +85,26 @@ td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);font
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--surf2);}
 .mono{font-family:monospace;font-size:11.5px;}
-
-/* SECTION HEADER */
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
 .sh-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
 .card{background:var(--surf1);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;}
-
-/* ALERT */
 .alert{display:flex;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid;margin-bottom:10px;font-size:12px;align-items:flex-start;}
 .alert-y{background:var(--yellow-bg);border-color:#2e2008;color:var(--yellow);}
 .alert-r{background:var(--red-bg);border-color:#2e1008;color:var(--red);}
 .alert-g{background:#0e1f04;border-color:#1a3008;color:var(--acc);}
 .alert-b{background:var(--blue-bg);border-color:#0d2535;color:var(--blue);}
-
-/* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center;}
 @media(min-width:600px){.overlay{align-items:center;}}
 .overlay.open{display:flex;}
 .modal{background:var(--surf1);border:1px solid var(--border2);border-radius:16px 16px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto;}
-@media(min-width:600px){.modal{border-radius:14px;width:500px;max-height:85vh;}}
+@media(min-width:600px){.modal{border-radius:14px;width:520px;}}
 .modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
-.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;line-height:1;}
+.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
 .form-full{margin-bottom:9px;}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
-
-/* BOSTA / BEBEDERO */
+.form-divider{border:none;border-top:1px solid var(--border);margin:12px 0;}
 .bosta-excelente{background:#0e2004;color:#7ac428;border:1px solid #1e3a08;}
 .bosta-normal{background:#1a2e08;color:var(--acc);border:1px solid #2e4a10;}
 .bosta-atencion{background:var(--yellow-bg);color:var(--yellow);border:1px solid #2e2008;}
@@ -128,62 +113,52 @@ tr:hover td{background:var(--surf2);}
 .beb-limpia{background:#081820;color:#5bc8f0;border:1px solid #0d2a3a;}
 .beb-proxima{background:var(--yellow-bg);color:var(--yellow);border:1px solid #2e2008;}
 .beb-sucia{background:var(--red-bg);color:var(--red);border:1px solid #2e1008;}
-
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:14px;overflow-x:auto;}
-.tab{padding:6px 13px;border-radius:7px;font-size:12px;cursor:pointer;color:var(--text3);border:1px solid transparent;transition:.12s;white-space:nowrap;}
-.tab:hover{color:var(--text2);background:var(--surf2);}
-.tab.active{color:var(--acc2);background:#1c2d08;border-color:var(--border2);font-weight:500;}
-
-/* OVERLAY SIDEBAR */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;}
 .sidebar-overlay.open{display:block;}
 @media(min-width:768px){.sidebar-overlay{display:none!important;}}
-
-/* LOADING */
-.loading{text-align:center;padding:40px;color:var(--text3);}
-.spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px;}
+.loading{text-align:center;padding:30px;color:var(--text3);}
+.spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-.page.active .content>*{animation:fadeUp .2s ease both;}
+.cierre-section{background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.cierre-section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.cierre-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12.5px;}
+.cierre-row:last-child{border-bottom:none;}
+.cierre-total{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--surf3);border:1px solid var(--border2);border-radius:9px;margin-top:10px;}
 </style>
 </head>
 <body>
-<!-- LOGIN -->
 <div id="login-wrap" class="login-wrap">
   <div class="login-box">
     <div class="login-title">GanApp</div>
     <div class="login-sub">Confinamiento Bovino</div>
-    <div class="fg">
-      <label class="fl">Email</label>
-      <input class="fi" type="email" id="login-email" placeholder="tu@email.com">
-    </div>
-    <div class="fg">
-      <label class="fl">Contraseña</label>
-      <input class="fi" type="password" id="login-pass" placeholder="••••••••">
-    </div>
-    <button class="btn btn-primary" onclick="loginUser()">Ingresar</button>
-    <button class="btn btn-primary" style="background:var(--surf2);color:var(--text2);border:1px solid var(--border);margin-top:8px;" onclick="registerUser()">Crear cuenta nueva</button>
+    <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="login-email" placeholder="tu@email.com"></div>
+    <div class="fg"><label class="fl">Contraseña</label><input class="fi" type="password" id="login-pass" placeholder="••••••••"></div>
+    <button class="btn btn-primary btn-block" onclick="loginUser()">Ingresar</button>
+    <button class="btn btn-block" style="background:var(--surf2);color:var(--text2);border:1px solid var(--border);margin-top:8px;" onclick="registerUser()">Crear cuenta nueva</button>
     <div id="login-err" class="login-err"></div>
   </div>
 </div>
-
-<!-- APP -->
 <div id="app-wrap" class="app-wrap hidden">
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
   <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="brand-name">GanApp</div>
-      <div class="brand-sub">Confinamiento Bovino</div>
+    <div class="brand"><div class="brand-name">GanApp</div><div class="brand-sub">Confinamiento Bovino</div></div>
+    <div class="estab-switcher">
+      <div class="estab-label">Establecimiento activo</div>
+      <div class="estab-current" onclick="openModal('modal-establecimientos')">
+        <div><div class="estab-name-sw" id="sw-estab-name">—</div><div class="estab-detail-sw">Tocá para cambiar</div></div>
+        <span style="color:var(--text3)">⌄</span>
+      </div>
     </div>
     <div class="nav-group">
       <div class="nav-sep">Principal</div>
       <div class="nav-btn active" onclick="nav('dashboard',this)"><span class="nav-ico">📊</span>Dashboard</div>
       <div class="nav-btn" onclick="nav('animales',this)"><span class="nav-ico">🐂</span>Animales</div>
+      <div class="nav-btn" onclick="nav('alertas',this)"><span class="nav-ico">🔔</span>Alertas<span class="nav-badge" id="badge-alertas">0</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-sep">Corral</div>
-      <div class="nav-btn" onclick="nav('corral',this)"><span class="nav-ico">🏕️</span>Control Corral</div>
+      <div class="nav-btn" onclick="nav('corrales',this)"><span class="nav-ico">🏕️</span>Corrales</div>
+      <div class="nav-btn" onclick="nav('corral',this)"><span class="nav-ico">📋</span>Control Corral</div>
       <div class="nav-btn" onclick="nav('raciones',this)"><span class="nav-ico">🥣</span>Raciones</div>
       <div class="nav-btn" onclick="nav('pesos',this)"><span class="nav-ico">⚖️</span>Control Pesos</div>
       <div class="nav-btn" onclick="nav('temperatura',this)"><span class="nav-ico">🌡️</span>Temperatura</div>
@@ -198,860 +173,281 @@ tr:hover td{background:var(--surf2);}
     <div class="nav-group">
       <div class="nav-sep">Análisis</div>
       <div class="nav-btn" onclick="nav('costos',this)"><span class="nav-ico">💰</span>Costos</div>
+      <div class="nav-btn" onclick="nav('rentabilidad',this)"><span class="nav-ico">📈</span>Rentabilidad</div>
       <div class="nav-btn" onclick="nav('calendario',this)"><span class="nav-ico">📅</span>Calendario</div>
+      <div class="nav-btn" onclick="nav('cierre',this)"><span class="nav-ico">📄</span>Cierre de Ciclo</div>
     </div>
     <div class="sidebar-foot">
       <div class="estab-badge">
         <div class="eb-label">Establecimiento</div>
         <div class="eb-name" id="sb-estab-name">—</div>
-        <div class="eb-sub" id="sb-estab-detail">cargando...</div>
+        <div class="eb-sub" id="sb-estab-detail">—</div>
       </div>
-      <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="logoutUser()">Cerrar sesión</button>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px;" onclick="logoutUser()">Cerrar sesión</button>
     </div>
   </aside>
-
   <main class="main">
     <div class="topbar">
       <div class="topbar-left">
         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
         <span class="topbar-title" id="topbar-title">Dashboard</span>
       </div>
-      <div class="topbar-right">
-        <span style="font-size:11px;color:var(--text3);" id="topbar-fecha"></span>
-      </div>
+      <span style="font-size:11px;color:var(--text3);" id="topbar-fecha"></span>
     </div>
-    <!-- DASHBOARD -->
-    <div id="page-dashboard" class="page active">
-      <div class="content">
+    <div id="page-dashboard" class="page active"><div class="content">
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Animales activos</div><div class="kpi-val" id="kpi-animales">—</div></div>
+        <div class="kpi"><div class="kpi-label">Corrales</div><div class="kpi-val" id="kpi-corrales">—</div></div>
+        <div class="kpi"><div class="kpi-label">Eventos sanidad</div><div class="kpi-val" id="kpi-sanidad">—</div></div>
+        <div class="kpi"><div class="kpi-label">Alertas activas</div><div class="kpi-val" id="kpi-alertas">—</div></div>
+      </div>
+      <div id="dashboard-alertas"></div>
+      <div class="sh"><span class="sh-title">Últimos animales</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Caravana</th><th>Corral</th><th>Fecha</th><th>Peso</th><th>Estado</th></tr></thead><tbody id="dashboard-animales"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+      <div class="sh"><span class="sh-title">Lecturas recientes</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Corral</th><th>Bosta</th><th>Bebedero</th><th>Operario</th></tr></thead><tbody id="dashboard-corral"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-animales" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Animales</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-animal')">+ Agregar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Caravana</th><th>Corral</th><th>F.entrada</th><th>Peso entr.</th><th>$/kg</th><th>Días</th><th>Estado</th></tr></thead><tbody id="tabla-animales"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-alertas" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Alertas</span></div>
+      <div id="lista-alertas"><div class="loading"><div class="spinner"></div></div></div>
+    </div></div>
+    <div id="page-corrales" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Corrales</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-nuevo-corral')">+ Nuevo</button></div>
+      <div id="lista-corrales"><div class="loading"><div class="spinner"></div></div></div>
+    </div></div>
+    <div id="page-corral" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Control de Corral</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-corral')">+ Nueva lectura</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Hora</th><th>Corral</th><th>Bosta%</th><th>Consist.</th><th>Clasif.</th><th>Beb.%</th><th>Agua</th><th>Operario</th></tr></thead><tbody id="tabla-corral"><tr><td colspan="9"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-raciones" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Raciones</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-racion')">+ Registrar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Corral</th><th>Sumin.</th><th>Ingrediente</th><th>Bolsas</th><th>Kg/bolsa</th><th>Total kg</th><th>$/kg</th><th>Costo</th><th>Operario</th></tr></thead><tbody id="tabla-raciones"><tr><td colspan="10"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-pesos" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Control de Pesos</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-peso')">+ Registrar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Caravana</th><th>Tipo</th><th>Fecha</th><th>Peso kg</th><th>C.corporal</th><th>Obs.</th></tr></thead><tbody id="tabla-pesos"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-temperatura" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Temperatura</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-temp')">+ Registrar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Máx.</th><th>Mín.</th><th>Humedad</th><th>Estrés</th><th>Obs.</th></tr></thead><tbody id="tabla-temp"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-dietas" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Dietas por corral</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-dieta')">+ Nueva</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Corral</th><th>Nombre</th><th>F.vigencia</th><th>Motivo</th><th>Activa</th></tr></thead><tbody id="tabla-dietas"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-sanidad" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Sanidad</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-sanidad')">+ Registrar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Caravanas</th><th>Evento</th><th>Remedio</th><th>Dosis</th><th>Vía</th><th>Carencia</th><th>Estado</th></tr></thead><tbody id="tabla-sanidad"><tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-remedios" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Remedios</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-remedio')">+ Agregar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Stock</th><th>Unidad</th><th>Vencimiento</th><th>Carencia</th><th>Estado</th></tr></thead><tbody id="tabla-remedios"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-proveedores" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Proveedores</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-proveedor')">+ Agregar</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Nombre</th><th>Rubro</th><th>Teléfono</th><th>Email</th></tr></thead><tbody id="tabla-proveedores"><tr><td colspan="4"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-costos" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Costos y Gastos</span><div style="display:flex;gap:6px;"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-jornal')">+ Jornal</button><button class="btn btn-primary btn-sm" onclick="openModal('modal-costo')">+ Gasto</button></div></div>
+      <div class="form-row" style="margin-bottom:14px;">
+        <div class="fg"><label class="fl">Filtrar corral</label><select class="fi" id="filtro-costo-corral" onchange="loadCostos()"><option value="">Todos</option></select></div>
+        <div class="fg"><label class="fl">Filtrar mes</label><input class="fi" type="month" id="filtro-costo-mes" onchange="loadCostos()"></div>
+      </div>
+      <div id="resumen-costos"></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Corral</th><th>Categoría</th><th>Descripción</th><th>Monto</th></tr></thead><tbody id="tabla-costos"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+      <div class="sh"><span class="sh-title">Jornales</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Operario</th><th>Categoría</th><th>Mes</th><th>Días</th><th>$/día</th><th>Total</th></tr></thead><tbody id="tabla-jornales"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-rentabilidad" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Rentabilidad por corral</span></div>
+      <div id="div-rentabilidad"><div class="loading"><div class="spinner"></div></div></div>
+    </div></div>
+    <div id="page-calendario" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Calendario de Tareas</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-tarea')">+ Nueva tarea</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Tarea</th><th>Tipo</th><th>Corral</th><th>Responsable</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody id="tabla-tareas"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody></table></div>
+    </div></div>
+    <div id="page-cierre" class="page"><div class="content">
+      <div class="sh"><span class="sh-title">Cierre de Ciclo</span></div>
+      <div class="card">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px;">Filtros del reporte</div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Corral</label><select class="fi" id="cierre-corral"><option value="">Todos</option></select></div>
+          <div class="fg"><label class="fl">Establecimiento</label><select class="fi" id="cierre-estab"><option value="">Actual</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Fecha desde</label><input class="fi" type="date" id="cierre-desde"></div>
+          <div class="fg"><label class="fl">Fecha hasta</label><input class="fi" type="date" id="cierre-hasta"></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:6px;" onclick="generarCierre()">Generar reporte</button>
+      </div>
+      <div id="cierre-resultado" class="hidden">
+        <div class="sh"><span class="sh-title">Resumen</span><button class="btn btn-primary btn-sm" onclick="descargarPDF()">📥 Descargar PDF</button></div>
         <div class="kpi-grid">
-          <div class="kpi"><div class="kpi-label">Animales activos</div><div class="kpi-val" id="kpi-animales">—</div><div class="kpi-unit">cabezas</div></div>
-          <div class="kpi"><div class="kpi-label">Corrales</div><div class="kpi-val" id="kpi-corrales">—</div><div class="kpi-unit">activos</div></div>
-          <div class="kpi"><div class="kpi-label">Eventos sanidad</div><div class="kpi-val" id="kpi-sanidad">—</div><div class="kpi-unit">este mes</div></div>
-          <div class="kpi"><div class="kpi-label">Tareas hoy</div><div class="kpi-val" id="kpi-tareas">—</div><div class="kpi-unit">programadas</div></div>
+          <div class="kpi"><div class="kpi-label">Animales</div><div class="kpi-val" id="c-animales">—</div></div>
+          <div class="kpi"><div class="kpi-label">Kg raciones</div><div class="kpi-val" id="c-kg">—</div></div>
+          <div class="kpi"><div class="kpi-label">Costo total</div><div class="kpi-val" id="c-costo">—</div></div>
+          <div class="kpi"><div class="kpi-label">Costo/animal</div><div class="kpi-val" id="c-costkg">—</div></div>
         </div>
-        <div id="dashboard-alertas"></div>
-        <div class="sh"><span class="sh-title">Últimos animales ingresados</span></div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Caravana</th><th>Corral</th><th>Fecha</th><th>Peso entr.</th><th>Estado</th></tr></thead>
-          <tbody id="dashboard-animales"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
-        </table></div>
-        <div class="sh"><span class="sh-title">Lecturas de corral recientes</span></div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Corral</th><th>Bosta</th><th>Bebedero</th><th>Operario</th></tr></thead>
-          <tbody id="dashboard-corral"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
-        </table></div>
+        <div class="cierre-section"><div class="cierre-section-title">🌾 Dieta y Raciones</div><div id="cierre-raciones"></div></div>
+        <div class="cierre-section"><div class="cierre-section-title">💉 Sanidad y Remedios</div><div id="cierre-sanidad"></div></div>
+        <div class="cierre-section"><div class="cierre-section-title">👷 Jornales</div><div id="cierre-jornales"></div></div>
+        <div class="cierre-section"><div class="cierre-section-title">🐂 Compra animales</div><div id="cierre-animales"></div></div>
+        <div class="cierre-section"><div class="cierre-section-title">💰 Otros gastos</div><div id="cierre-otros"></div></div>
+        <div class="cierre-total"><span style="font-family:'Syne',sans-serif;font-weight:700;">TOTAL GENERAL</span><span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--acc);" id="cierre-total-val">$0</span></div>
       </div>
-    </div>
-
-    <!-- ANIMALES -->
-    <div id="page-animales" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Animales</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-animal')">+ Agregar</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Caravana</th><th>Corral</th><th>F. entrada</th><th>Peso entr.</th><th>$/kg</th><th>Estado</th></tr></thead>
-          <tbody id="tabla-animales"><tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- CONTROL CORRAL -->
-    <div id="page-corral" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Control de Corral</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-corral')">+ Nueva lectura</button>
-        </div>
-        <div id="corral-alertas"></div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Hora</th><th>Corral</th><th>Bosta %</th><th>Consistencia</th><th>Clasificación</th><th>Bebedero %</th><th>Estado agua</th><th>Operario</th></tr></thead>
-          <tbody id="tabla-corral"><tr><td colspan="9"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- RACIONES -->
-    <div id="page-raciones" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Raciones</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-racion')">+ Registrar entrega</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Corral</th><th>Suministro</th><th>Ingrediente</th><th>Bolsas</th><th>Kg/bolsa</th><th>Total kg</th><th>$/kg</th><th>Costo</th><th>Operario</th></tr></thead>
-          <tbody id="tabla-raciones"><tr><td colspan="10"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- PESOS -->
-    <div id="page-pesos" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Control de Pesos</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-peso')">+ Registrar peso</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Caravana</th><th>Tipo</th><th>Fecha</th><th>Peso kg</th><th>Cond. corporal</th><th>Obs.</th></tr></thead>
-          <tbody id="tabla-pesos"><tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- TEMPERATURA -->
-    <div id="page-temperatura" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Temperatura Ambiental</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-temp')">+ Registrar</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Temp. máx.</th><th>Temp. mín.</th><th>Humedad</th><th>Estrés calórico</th><th>Obs.</th><th>Operario</th></tr></thead>
-          <tbody id="tabla-temp"><tr><td colspan="7"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- DIETAS -->
-    <div id="page-dietas" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Dietas</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-dieta')">+ Nueva dieta</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Nombre</th><th>F. vigencia</th><th>Motivo</th><th>Activa</th></tr></thead>
-          <tbody id="tabla-dietas"><tr><td colspan="4"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- SANIDAD -->
-    <div id="page-sanidad" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Sanidad</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-sanidad')">+ Registrar evento</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Caravanas</th><th>Evento</th><th>Remedio</th><th>Dosis</th><th>Vía</th><th>Operario</th><th>Estado</th></tr></thead>
-          <tbody id="tabla-sanidad"><tr><td colspan="8"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- REMEDIOS -->
-    <div id="page-remedios" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Remedios / Botiquín</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-remedio')">+ Agregar</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Nombre</th><th>Tipo</th><th>Stock</th><th>Unidad</th><th>Vencimiento</th><th>Estado</th></tr></thead>
-          <tbody id="tabla-remedios"><tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- PROVEEDORES -->
-    <div id="page-proveedores" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Proveedores</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-proveedor')">+ Agregar</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Nombre</th><th>Rubro</th><th>Teléfono</th><th>Email</th></tr></thead>
-          <tbody id="tabla-proveedores"><tr><td colspan="4"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- COSTOS -->
-    <div id="page-costos" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Costos</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-jornal')">+ Jornal</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Operario</th><th>Categoría</th><th>Mes</th><th>Días</th><th>$/día</th><th>Total</th></tr></thead>
-          <tbody id="tabla-jornales"><tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- CALENDARIO -->
-    <div id="page-calendario" class="page">
-      <div class="content">
-        <div class="sh">
-          <span class="sh-title">Calendario de Tareas</span>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-tarea')">+ Nueva tarea</button>
-        </div>
-        <div class="tbl-wrap"><table>
-          <thead><tr><th>Fecha</th><th>Tarea</th><th>Tipo</th><th>Corral</th><th>Responsable</th><th>Estado</th></tr></thead>
-          <tbody id="tabla-tareas"><tr><td colspan="6"><div class="loading"><div class="spinner"></div><br>Cargando...</div></td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
+    </div></div>
   </main>
 </div>
 <!-- MODALES -->
+<div class="overlay" id="modal-establecimientos">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-title">Mis establecimientos</span><button class="modal-close" onclick="closeModal('modal-establecimientos')">✕</button></div>
+    <div id="lista-establecimientos"></div>
+    <hr class="form-divider">
+    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:10px;">Agregar nuevo</div>
+    <div class="form-row"><div class="fg"><label class="fl">Nombre</label><input class="fi" id="ne-nombre" placeholder="La Esperanza"></div><div class="fg"><label class="fl">Provincia</label><input class="fi" id="ne-provincia"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Localidad</label><input class="fi" id="ne-localidad"></div><div class="fg"><label class="fl">Responsable</label><input class="fi" id="ne-responsable"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-establecimientos')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="crearEstablecimiento()">Crear</button></div>
+  </div>
+</div>
+<div class="overlay" id="modal-nuevo-corral">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-title">Nuevo corral</span><button class="modal-close" onclick="closeModal('modal-nuevo-corral')">✕</button></div>
+    <div class="form-row"><div class="fg"><label class="fl">Nombre</label><input class="fi" id="nc-nombre" placeholder="Corral 1"></div><div class="fg"><label class="fl">Lote</label><input class="fi" id="nc-lote" placeholder="Lote A"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Capacidad</label><input class="fi" type="number" id="nc-capacidad"></div><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="nc-obs"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-nuevo-corral')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarCorralNuevo()">Guardar</button></div>
+  </div>
+</div>
 <div class="overlay" id="modal-animal">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Registrar animal</span><button class="modal-close" onclick="closeModal('modal-animal')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Caravana</label><input class="fi" id="a-caravana" placeholder="#C-1050"></div>
-      <div class="fg"><label class="fl">Corral</label><select class="fi" id="a-corral"></select></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha compra</label><input class="fi" type="date" id="a-fecha"></div>
-      <div class="fg"><label class="fl">Proveedor</label><input class="fi" id="a-proveedor"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Peso entrada kg</label><input class="fi" type="number" id="a-peso"></div>
-      <div class="fg"><label class="fl">Precio $/kg</label><input class="fi" type="number" id="a-precio"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Categoría</label>
-        <select class="fi" id="a-categoria">
-          <option>Novillito</option><option>Novillo</option><option>Vaquillona</option><option>Ternero</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Raza</label><input class="fi" id="a-raza" placeholder="Angus, Hereford..."></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-animal')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarAnimal()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Caravana</label><input class="fi" id="a-caravana" placeholder="#C-1050"></div><div class="fg"><label class="fl">Corral</label><select class="fi" id="a-corral"></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha compra</label><input class="fi" type="date" id="a-fecha"></div><div class="fg"><label class="fl">Proveedor</label><input class="fi" id="a-proveedor"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Peso entrada kg</label><input class="fi" type="number" id="a-peso"></div><div class="fg"><label class="fl">Precio $/kg</label><input class="fi" type="number" id="a-precio"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Categoría</label><select class="fi" id="a-categoria"><option>Novillito</option><option>Novillo</option><option>Vaquillona</option><option>Ternero</option></select></div><div class="fg"><label class="fl">Raza</label><input class="fi" id="a-raza"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-animal')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarAnimal()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-corral">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Lectura de corral</span><button class="modal-close" onclick="closeModal('modal-corral')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Corral</label><select class="fi" id="c-corral"></select></div>
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="c-fecha"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Hora</label><input class="fi" type="time" id="c-hora"></div>
-      <div class="fg"><label class="fl">Operario</label><input class="fi" id="c-operario"></div>
-    </div>
-    <div class="form-full"><label class="fl" style="display:block;margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">🪣 Batea de bosta</label></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nivel %</label><input class="fi" type="number" id="c-bosta-nivel" min="0" max="100"></div>
-      <div class="fg"><label class="fl">Consistencia</label>
-        <select class="fi" id="c-bosta-consist">
-          <option value="Seca/Dura">Seca/Dura → Excelente</option>
-          <option value="Formada">Formada → Normal</option>
-          <option value="Pastosa">Pastosa → Atención</option>
-          <option value="Líquida">Líquida → Crítica</option>
-          <option value="Diarrea">Diarrea → Crítica</option>
-        </select>
-      </div>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Corral</label><select class="fi" id="c-corral"></select></div><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="c-fecha"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Hora</label><input class="fi" type="time" id="c-hora"></div><div class="fg"><label class="fl">Operario</label><input class="fi" id="c-operario"></div></div>
+    <hr class="form-divider">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🪣 Batea de bosta</div>
+    <div class="form-row"><div class="fg"><label class="fl">Nivel %</label><input class="fi" type="number" id="c-bosta-nivel" min="0" max="100"></div><div class="fg"><label class="fl">Consistencia</label><select class="fi" id="c-bosta-consist"><option value="Seca/Dura">Seca/Dura → Excelente</option><option value="Formada">Formada → Normal</option><option value="Pastosa">Pastosa → Atención</option><option value="Líquida">Líquida → Crítica</option><option value="Diarrea">Diarrea → Crítica</option></select></div></div>
     <div class="form-full"><div class="fg"><label class="fl">Obs. bosta</label><input class="fi" id="c-bosta-obs"></div></div>
-    <div class="form-full"><label class="fl" style="display:block;margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">💧 Bebedero</label></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nivel %</label><input class="fi" type="number" id="c-beb-nivel" min="0" max="100"></div>
-      <div class="fg"><label class="fl">Estado agua</label>
-        <select class="fi" id="c-beb-estado">
-          <option value="Limpia">Limpia</option>
-          <option value="Próxima limpieza">Próxima limpieza</option>
-          <option value="Sucia">Sucia</option>
-        </select>
-      </div>
-    </div>
+    <hr class="form-divider">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">💧 Bebedero</div>
+    <div class="form-row"><div class="fg"><label class="fl">Nivel %</label><input class="fi" type="number" id="c-beb-nivel" min="0" max="100"></div><div class="fg"><label class="fl">Estado agua</label><select class="fi" id="c-beb-estado"><option value="Limpia">Limpia</option><option value="Próxima limpieza">Próxima limpieza</option><option value="Sucia">Sucia</option></select></div></div>
     <div class="form-full"><div class="fg"><label class="fl">Obs. bebedero</label><input class="fi" id="c-beb-obs"></div></div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-corral')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarCorral()">Guardar</button>
-    </div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-corral')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarCorral()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-racion">
   <div class="modal">
-    <div class="modal-hdr"><span class="modal-title">Registrar entrega de ración</span><button class="modal-close" onclick="closeModal('modal-racion')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Corral</label><select class="fi" id="r-corral"></select></div>
-      <div class="fg"><label class="fl">Suministro</label>
-        <select class="fi" id="r-suministro">
-          <option value="1">1° suministro</option><option value="2">2° suministro</option>
-          <option value="3">3° suministro</option><option value="4">4° suministro</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="r-fecha"></div>
-      <div class="fg"><label class="fl">Hora</label><input class="fi" type="time" id="r-hora"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Ingrediente</label>
-        <select class="fi" id="r-ingrediente">
-          <option>Maíz molido</option><option>Expeller soja</option>
-          <option>Heno alfalfa</option><option>Silaje maíz</option><option>Núcleo mineral</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Kg por bolsa</label>
-        <select class="fi" id="r-kgbolsa">
-          <option value="1">1 kg</option><option value="2">2 kg</option><option value="5">5 kg</option>
-          <option value="10">10 kg</option><option value="20">20 kg</option><option value="25">25 kg</option>
-          <option value="30">30 kg</option><option value="40">40 kg</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Cantidad bolsas</label><input class="fi" type="number" id="r-bolsas" oninput="calcRacionModal()"></div>
-      <div class="fg"><label class="fl">$/kg</label><input class="fi" type="number" id="r-precio" oninput="calcRacionModal()"></div>
-    </div>
+    <div class="modal-hdr"><span class="modal-title">Registrar ración</span><button class="modal-close" onclick="closeModal('modal-racion')">✕</button></div>
+    <div class="form-row"><div class="fg"><label class="fl">Corral</label><select class="fi" id="r-corral"></select></div><div class="fg"><label class="fl">Suministro</label><select class="fi" id="r-suministro"><option value="1">1°</option><option value="2">2°</option><option value="3">3°</option><option value="4">4°</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="r-fecha"></div><div class="fg"><label class="fl">Hora</label><input class="fi" type="time" id="r-hora"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Ingrediente</label><select class="fi" id="r-ingrediente"><option>Maíz molido</option><option>Expeller soja</option><option>Heno alfalfa</option><option>Silaje maíz</option><option>Núcleo mineral</option><option>Otro</option></select></div><div class="fg"><label class="fl">Kg por bolsa</label><select class="fi" id="r-kgbolsa"><option value="1">1 kg</option><option value="2">2 kg</option><option value="5">5 kg</option><option value="10">10 kg</option><option value="20">20 kg</option><option value="25">25 kg</option><option value="30">30 kg</option><option value="40">40 kg</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Bolsas</label><input class="fi" type="number" id="r-bolsas" oninput="calcRacionModal()"></div><div class="fg"><label class="fl">$/kg</label><input class="fi" type="number" id="r-precio" oninput="calcRacionModal()"></div></div>
     <div style="background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;">
       <span style="font-size:12px;color:var(--text2);">Total kg: <b id="r-totkg" style="color:var(--acc2)">0</b></span>
       <span style="font-size:12px;color:var(--text2);">Costo: <b id="r-totcosto" style="color:var(--acc)">$0</b></span>
     </div>
-    <div class="form-full"><div class="fg"><label class="fl">Operario</label><input class="fi" id="r-operario"></div></div>
-    <div class="form-full"><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="r-obs"></div></div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-racion')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarRacion()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Operario</label><input class="fi" id="r-operario"></div><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="r-obs"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-racion')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarRacion()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-peso">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Registrar pesaje</span><button class="modal-close" onclick="closeModal('modal-peso')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Caravana</label><input class="fi" id="p-caravana" placeholder="#C-1042"></div>
-      <div class="fg"><label class="fl">Tipo</label>
-        <select class="fi" id="p-tipo">
-          <option value="entrada">Peso entrada</option>
-          <option value="control">Peso control</option>
-          <option value="salida">Peso salida</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="p-fecha"></div>
-      <div class="fg"><label class="fl">Peso kg</label><input class="fi" type="number" id="p-peso"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Condición corporal (1-9)</label><input class="fi" type="number" id="p-cc" min="1" max="9"></div>
-      <div class="fg"><label class="fl">Observaciones</label><input class="fi" id="p-obs"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-peso')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarPeso()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Caravana</label><input class="fi" id="p-caravana" placeholder="#C-1042"></div><div class="fg"><label class="fl">Tipo</label><select class="fi" id="p-tipo"><option value="entrada">Peso entrada</option><option value="control">Peso control</option><option value="salida">Peso salida</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="p-fecha"></div><div class="fg"><label class="fl">Peso kg</label><input class="fi" type="number" id="p-peso"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Condición corporal (1-9)</label><input class="fi" type="number" id="p-cc" min="1" max="9"></div><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="p-obs"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-peso')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarPeso()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-temp">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Registrar temperatura</span><button class="modal-close" onclick="closeModal('modal-temp')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="t-fecha"></div>
-      <div class="fg"><label class="fl">Operario</label><input class="fi" id="t-operario"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Temp. máx °C</label><input class="fi" type="number" id="t-max"></div>
-      <div class="fg"><label class="fl">Temp. mín °C</label><input class="fi" type="number" id="t-min"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Humedad %</label><input class="fi" type="number" id="t-humedad"></div>
-      <div class="fg"><label class="fl">Estrés calórico</label>
-        <select class="fi" id="t-estres">
-          <option>Sin estrés</option><option>Estrés leve</option>
-          <option>Estrés moderado</option><option>Estrés alto</option>
-        </select>
-      </div>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="t-fecha"></div><div class="fg"><label class="fl">Operario</label><input class="fi" id="t-operario"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Temp. máx °C</label><input class="fi" type="number" id="t-max"></div><div class="fg"><label class="fl">Temp. mín °C</label><input class="fi" type="number" id="t-min"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Humedad %</label><input class="fi" type="number" id="t-humedad"></div><div class="fg"><label class="fl">Estrés calórico</label><select class="fi" id="t-estres"><option>Sin estrés</option><option>Estrés leve</option><option>Estrés moderado</option><option>Estrés alto</option></select></div></div>
     <div class="form-full"><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="t-obs"></div></div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-temp')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarTemp()">Guardar</button>
-    </div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-temp')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarTemp()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-dieta">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Nueva dieta</span><button class="modal-close" onclick="closeModal('modal-dieta')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="d-nombre" placeholder="Fase 3 — Engorde"></div>
-      <div class="fg"><label class="fl">Fecha vigencia</label><input class="fi" type="date" id="d-fecha"></div>
-    </div>
-    <div class="form-full"><div class="fg"><label class="fl">Motivo del cambio</label><input class="fi" id="d-motivo"></div></div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-dieta')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarDieta()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Corral</label><select class="fi" id="d-corral"></select></div><div class="fg"><label class="fl">Nombre</label><input class="fi" id="d-nombre" placeholder="Fase 3"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha vigencia</label><input class="fi" type="date" id="d-fecha"></div><div class="fg"><label class="fl">Motivo cambio</label><input class="fi" id="d-motivo"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-dieta')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarDieta()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-sanidad">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Evento sanitario</span><button class="modal-close" onclick="closeModal('modal-sanidad')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="s-fecha"></div>
-      <div class="fg"><label class="fl">Corral</label><select class="fi" id="s-corral"></select></div>
-    </div>
-    <div class="form-full"><div class="fg"><label class="fl">Caravanas</label><input class="fi" id="s-caravanas" placeholder="#C-1030, #C-1031 o Lote B"></div></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Tipo evento</label>
-        <select class="fi" id="s-tipo">
-          <option>Vacunación</option><option>Desparasitación</option>
-          <option>Antibiótico</option><option>Antiinflamatorio</option><option>Otro</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Remedio</label><select class="fi" id="s-remedio"></select></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Dosis</label><input class="fi" id="s-dosis" placeholder="5ml/100kg"></div>
-      <div class="fg"><label class="fl">Vía</label>
-        <select class="fi" id="s-via">
-          <option>SC</option><option>IM</option><option>EV</option><option>Oral</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Operario</label><input class="fi" id="s-operario"></div>
-      <div class="fg"><label class="fl">Estado</label>
-        <select class="fi" id="s-estado">
-          <option>Completo</option><option>En tratamiento</option><option>Sin resolver</option>
-        </select>
-      </div>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="s-fecha"></div><div class="fg"><label class="fl">Corral</label><select class="fi" id="s-corral"></select></div></div>
+    <div class="form-full"><div class="fg"><label class="fl">Caravanas</label><input class="fi" id="s-caravanas" placeholder="#C-1030 o Lote B completo"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Tipo evento</label><select class="fi" id="s-tipo"><option>Vacunación</option><option>Desparasitación</option><option>Antibiótico</option><option>Antiinflamatorio</option><option>Otro</option></select></div><div class="fg"><label class="fl">Remedio</label><select class="fi" id="s-remedio"></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Dosis</label><input class="fi" id="s-dosis" placeholder="5ml/100kg"></div><div class="fg"><label class="fl">Vía</label><select class="fi" id="s-via"><option>SC</option><option>IM</option><option>EV</option><option>Oral</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Operario</label><input class="fi" id="s-operario"></div><div class="fg"><label class="fl">Estado</label><select class="fi" id="s-estado"><option>Completo</option><option>En tratamiento</option><option>Sin resolver</option></select></div></div>
     <div class="form-full"><div class="fg"><label class="fl">Observaciones</label><input class="fi" id="s-obs"></div></div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-sanidad')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarSanidad()">Guardar</button>
-    </div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-sanidad')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarSanidad()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-remedio">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Agregar remedio</span><button class="modal-close" onclick="closeModal('modal-remedio')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="rem-nombre"></div>
-      <div class="fg"><label class="fl">Principio activo</label><input class="fi" id="rem-principio"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Tipo</label>
-        <select class="fi" id="rem-tipo">
-          <option>Antibiótico</option><option>Antiparasitario</option>
-          <option>AINE</option><option>Corticoide</option><option>Vacuna</option><option>Vitaminas</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Vía</label>
-        <select class="fi" id="rem-via"><option>SC</option><option>IM</option><option>EV</option><option>Oral</option></select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Stock</label><input class="fi" type="number" id="rem-stock"></div>
-      <div class="fg"><label class="fl">Unidad</label><input class="fi" id="rem-unidad" placeholder="frascos, dosis..."></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Vencimiento</label><input class="fi" type="date" id="rem-venc"></div>
-      <div class="fg"><label class="fl">Stock mínimo alerta</label><input class="fi" type="number" id="rem-minimo"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-remedio')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarRemedio()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Nombre</label><input class="fi" id="rem-nombre"></div><div class="fg"><label class="fl">Principio activo</label><input class="fi" id="rem-principio"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Tipo</label><select class="fi" id="rem-tipo"><option>Antibiótico</option><option>Antiparasitario</option><option>AINE</option><option>Corticoide</option><option>Vacuna</option><option>Vitaminas</option></select></div><div class="fg"><label class="fl">Vía</label><select class="fi" id="rem-via"><option>SC</option><option>IM</option><option>EV</option><option>Oral</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Stock</label><input class="fi" type="number" id="rem-stock"></div><div class="fg"><label class="fl">Unidad</label><input class="fi" id="rem-unidad" placeholder="frascos, dosis..."></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Vencimiento</label><input class="fi" type="date" id="rem-venc"></div><div class="fg"><label class="fl">Días de carencia</label><input class="fi" type="number" id="rem-carencia" placeholder="Ej: 28"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Stock mínimo alerta</label><input class="fi" type="number" id="rem-minimo"></div><div class="fg"><label class="fl">Precio por unidad $</label><input class="fi" type="number" id="rem-precio"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-remedio')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarRemedio()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-proveedor">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Agregar proveedor</span><button class="modal-close" onclick="closeModal('modal-proveedor')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="pv-nombre"></div>
-      <div class="fg"><label class="fl">Rubro</label>
-        <select class="fi" id="pv-rubro">
-          <option>Hacienda</option><option>Cereales</option><option>Forraje</option>
-          <option>Veterinaria</option><option>Minerales</option><option>Otro</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Teléfono</label><input class="fi" type="tel" id="pv-tel"></div>
-      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="pv-email"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-proveedor')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarProveedor()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Nombre</label><input class="fi" id="pv-nombre"></div><div class="fg"><label class="fl">Rubro</label><select class="fi" id="pv-rubro"><option>Hacienda</option><option>Cereales</option><option>Forraje</option><option>Veterinaria</option><option>Minerales</option><option>Otro</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Teléfono</label><input class="fi" type="tel" id="pv-tel"></div><div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="pv-email"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-proveedor')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarProveedor()">Guardar</button></div>
   </div>
 </div>
-
+<div class="overlay" id="modal-costo">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-title">Registrar gasto</span><button class="modal-close" onclick="closeModal('modal-costo')">✕</button></div>
+    <div class="form-row"><div class="fg"><label class="fl">Corral</label><select class="fi" id="co-corral"></select></div><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="co-fecha"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Categoría</label><select class="fi" id="co-categoria"><option>Dieta/Alimento</option><option>Sanidad</option><option>Mantenimiento</option><option>Combustible</option><option>Otro</option></select></div><div class="fg"><label class="fl">Descripción</label><input class="fi" id="co-desc"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Monto $</label><input class="fi" type="number" id="co-monto"></div><div class="fg"><label class="fl">Mes</label><input class="fi" type="month" id="co-mes"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-costo')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarCosto()">Guardar</button></div>
+  </div>
+</div>
 <div class="overlay" id="modal-jornal">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Registrar jornal</span><button class="modal-close" onclick="closeModal('modal-jornal')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Operario</label><input class="fi" id="j-operario"></div>
-      <div class="fg"><label class="fl">Categoría</label>
-        <select class="fi" id="j-categoria">
-          <option>Encargado</option><option>Peón especializado</option>
-          <option>Peón general</option><option>Eventual</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Mes</label><input class="fi" id="j-mes" placeholder="Abril 2025"></div>
-      <div class="fg"><label class="fl">Días trabajados</label><input class="fi" type="number" id="j-dias" oninput="calcJornal()"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">$/día</label><input class="fi" type="number" id="j-jornal" oninput="calcJornal()"></div>
-      <div class="fg"><label class="fl">Total</label><input class="fi" id="j-total" readonly style="color:var(--acc2)"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-jornal')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarJornal()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Operario</label><input class="fi" id="j-operario"></div><div class="fg"><label class="fl">Categoría</label><select class="fi" id="j-categoria"><option>Encargado</option><option>Peón especializado</option><option>Peón general</option><option>Eventual</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Mes</label><input class="fi" id="j-mes" placeholder="Abril 2025"></div><div class="fg"><label class="fl">Días trabajados</label><input class="fi" type="number" id="j-dias" oninput="calcJornal()"></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">$/día</label><input class="fi" type="number" id="j-jornal" oninput="calcJornal()"></div><div class="fg"><label class="fl">Total</label><input class="fi" id="j-total" readonly style="color:var(--acc2)"></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-jornal')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarJornal()">Guardar</button></div>
   </div>
 </div>
-
 <div class="overlay" id="modal-tarea">
   <div class="modal">
     <div class="modal-hdr"><span class="modal-title">Nueva tarea</span><button class="modal-close" onclick="closeModal('modal-tarea')">✕</button></div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Tarea</label><input class="fi" id="ta-titulo"></div>
-      <div class="fg"><label class="fl">Tipo</label>
-        <select class="fi" id="ta-tipo">
-          <option>Pesaje</option><option>Vacunación</option><option>Limpieza</option>
-          <option>Desparasitación</option><option>Compra animales</option><option>Otro</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="ta-fecha"></div>
-      <div class="fg"><label class="fl">Corral</label><select class="fi" id="ta-corral"></select></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label class="fl">Responsable</label><input class="fi" id="ta-responsable"></div>
-      <div class="fg"><label class="fl">Prioridad</label>
-        <select class="fi" id="ta-prioridad">
-          <option>Normal</option><option>Alta</option><option>Urgente</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-tarea')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarTarea()">Guardar</button>
-    </div>
+    <div class="form-row"><div class="fg"><label class="fl">Tarea</label><input class="fi" id="ta-titulo"></div><div class="fg"><label class="fl">Tipo</label><select class="fi" id="ta-tipo"><option>Pesaje</option><option>Vacunación</option><option>Limpieza</option><option>Desparasitación</option><option>Compra animales</option><option>Otro</option></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Fecha</label><input class="fi" type="date" id="ta-fecha"></div><div class="fg"><label class="fl">Corral</label><select class="fi" id="ta-corral"></select></div></div>
+    <div class="form-row"><div class="fg"><label class="fl">Responsable</label><input class="fi" id="ta-responsable"></div><div class="fg"><label class="fl">Prioridad</label><select class="fi" id="ta-prioridad"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div></div>
+    <div class="form-actions"><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-tarea')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarTarea()">Guardar</button></div>
   </div>
 </div>
-<script>
-const SURL='https://lzpgaxnwaegnaungrxlw.supabase.co';
-const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6cGdheG53YWVnbmF1bmdyeGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjQwNzIsImV4cCI6MjA5MTc0MDA3Mn0.WQZrQF7XgMWfuK8uDIlnkG7Co3mtMxmz-RtP_XzSmb4';
-const sb=supabase.createClient(SURL,SKEY);
-let estabId=null;
-let corralesList=[];
-
-// INIT
-window.onload=async()=>{
-  const d=new Date();
-  document.getElementById('topbar-fecha').textContent=d.toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-  const {data:{session}}=await sb.auth.getSession();
-  if(session){showApp();}
-};
-
-// AUTH
-async function loginUser(){
-  const email=document.getElementById('login-email').value;
-  const pass=document.getElementById('login-pass').value;
-  const {error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error){document.getElementById('login-err').textContent=error.message;}
-  else{showApp();}
-}
-async function registerUser(){
-  const email=document.getElementById('login-email').value;
-  const pass=document.getElementById('login-pass').value;
-  if(!email||!pass){document.getElementById('login-err').textContent='Completá email y contraseña';return;}
-  const {error}=await sb.auth.signUp({email,password:pass});
-  if(error){document.getElementById('login-err').textContent=error.message;}
-  else{document.getElementById('login-err').style.color='var(--acc)';document.getElementById('login-err').textContent='Cuenta creada. Revisá tu email para confirmar.';}
-}
-async function logoutUser(){
-  await sb.auth.signOut();
-  document.getElementById('app-wrap').classList.add('hidden');
-  document.getElementById('login-wrap').classList.remove('hidden');
-}
-async function showApp(){
-  document.getElementById('login-wrap').classList.add('hidden');
-  document.getElementById('app-wrap').classList.remove('hidden');
-  await loadEstab();
-  loadDashboard();
-}
-
-// ESTABLECIMIENTO
-async function loadEstab(){
-  const {data}=await sb.from('establecimientos').select('*').limit(1);
-  if(data&&data.length){
-    estabId=data[0].id;
-    document.getElementById('sb-estab-name').textContent=data[0].nombre;
-    document.getElementById('sb-estab-detail').textContent=data[0].provincia||'';
-  }
-  await loadCorrales();
-}
-async function loadCorrales(){
-  const {data}=await sb.from('corrales').select('*').eq('establecimiento_id',estabId);
-  corralesList=data||[];
-  ['a-corral','c-corral','r-corral','s-corral','ta-corral'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.innerHTML='<option value="">Seleccionar...</option>';
-    corralesList.forEach(c=>{el.innerHTML+=`<option value="${c.id}">${c.nombre}</option>`;});
-  });
-}
-
-// DASHBOARD
-async function loadDashboard(){
-  const {count:ca}=await sb.from('animales').select('*',{count:'exact',head:true}).eq('establecimiento_id',estabId).eq('estado','activo');
-  document.getElementById('kpi-animales').textContent=ca||0;
-  document.getElementById('kpi-corrales').textContent=corralesList.length;
-  const {count:cs}=await sb.from('sanidad').select('*',{count:'exact',head:true}).eq('establecimiento_id',estabId);
-  document.getElementById('kpi-sanidad').textContent=cs||0;
-  const {count:ct}=await sb.from('tareas').select('*',{count:'exact',head:true}).eq('establecimiento_id',estabId).eq('estado','pendiente');
-  document.getElementById('kpi-tareas').textContent=ct||0;
-  const {data:animales}=await sb.from('animales').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false}).limit(5);
-  const tb=document.getElementById('dashboard-animales');
-  if(!animales||!animales.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">Sin animales registrados</td></tr>';return;}
-  tb.innerHTML=animales.map(a=>`<tr><td class="mono">${a.caravana}</td><td>${corralesList.find(c=>c.id===a.corral_id)?.nombre||'—'}</td><td>${a.fecha_compra||'—'}</td><td>${a.peso_entrada||'—'} kg</td><td><span class="chip chip-g">${a.estado}</span></td></tr>`).join('');
-  const {data:lecturas}=await sb.from('control_corral').select('*').order('created_at',{ascending:false}).limit(5);
-  const tc=document.getElementById('dashboard-corral');
-  if(!lecturas||!lecturas.length){tc.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">Sin lecturas registradas</td></tr>';return;}
-  tc.innerHTML=lecturas.map(l=>`<tr><td>${l.fecha}</td><td>${corralesList.find(c=>c.id===l.corral_id)?.nombre||'—'}</td><td>${l.clasificacion_bosta||l.consistencia_bosta||'—'}</td><td>${l.estado_bebedero||'—'}</td><td>${l.operario||'—'}</td></tr>`).join('');
-}
-
-// ANIMALES
-async function loadAnimales(){
-  const {data}=await sb.from('animales').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
-  const tb=document.getElementById('tabla-animales');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Sin animales. Agregá el primero.</td></tr>';return;}
-  tb.innerHTML=data.map(a=>`<tr><td class="mono">${a.caravana}</td><td>${corralesList.find(c=>c.id===a.corral_id)?.nombre||'—'}</td><td>${a.fecha_compra||'—'}</td><td>${a.peso_entrada||'—'} kg</td><td>$${a.precio_kg||'—'}</td><td><span class="chip chip-g">${a.estado}</span></td></tr>`).join('');
-}
-async function guardarAnimal(){
-  const obj={establecimiento_id:estabId,caravana:document.getElementById('a-caravana').value,corral_id:document.getElementById('a-corral').value,fecha_compra:document.getElementById('a-fecha').value,proveedor:document.getElementById('a-proveedor').value,peso_entrada:parseFloat(document.getElementById('a-peso').value)||null,precio_kg:parseFloat(document.getElementById('a-precio').value)||null,categoria:document.getElementById('a-categoria').value,raza:document.getElementById('a-raza').value,estado:'activo'};
-  await sb.from('animales').insert(obj);
-  closeModal('modal-animal');loadAnimales();loadDashboard();
-}
-
-// CORRAL
-async function loadCorral(){
-  const {data}=await sb.from('control_corral').select('*').order('created_at',{ascending:false}).limit(50);
-  const tb=document.getElementById('tabla-corral');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px;">Sin lecturas. Registrá la primera.</td></tr>';return;}
-  tb.innerHTML=data.map(l=>{
-    const bClass=l.clasificacion_bosta==='Excelente'?'bosta-excelente':l.clasificacion_bosta==='Normal'?'bosta-normal':l.clasificacion_bosta==='Atención'?'bosta-atencion':'bosta-critica';
-    const wClass=l.estado_bebedero==='Limpia'?'beb-limpia':l.estado_bebedero==='Próxima limpieza'?'beb-proxima':'beb-sucia';
-    return`<tr><td>${l.fecha}</td><td class="mono">${l.hora||'—'}</td><td>${corralesList.find(c=>c.id===l.corral_id)?.nombre||'—'}</td><td>${l.nivel_bosta||'—'}%</td><td>${l.consistencia_bosta||'—'}</td><td><span class="bosta-chip ${bClass}">${l.clasificacion_bosta||'—'}</span></td><td>${l.nivel_bebedero||'—'}%</td><td><span class="beb-chip ${wClass}">${l.estado_bebedero||'—'}</span></td><td>${l.operario||'—'}</td></tr>`;
-  }).join('');
-}
-function clasifBosta(consist){
-  if(consist==='Seca/Dura')return'Excelente';
-  if(consist==='Formada')return'Normal';
-  if(consist==='Pastosa')return'Atención';
-  return'Crítica';
-}
-async function guardarCorral(){
-  const consist=document.getElementById('c-bosta-consist').value;
-  const obj={corral_id:document.getElementById('c-corral').value,fecha:document.getElementById('c-fecha').value,hora:document.getElementById('c-hora').value,nivel_bosta:parseFloat(document.getElementById('c-bosta-nivel').value)||null,consistencia_bosta:consist,clasificacion_bosta:clasifBosta(consist),obs_bosta:document.getElementById('c-bosta-obs').value,nivel_bebedero:parseFloat(document.getElementById('c-beb-nivel').value)||null,estado_bebedero:document.getElementById('c-beb-estado').value,obs_bebedero:document.getElementById('c-beb-obs').value,operario:document.getElementById('c-operario').value};
-  await sb.from('control_corral').insert(obj);
-  closeModal('modal-corral');loadCorral();
-}
-
-// RACIONES
-async function loadRaciones(){
-  const {data}=await sb.from('raciones_entregas').select('*').order('created_at',{ascending:false}).limit(50);
-  const tb=document.getElementById('tabla-raciones');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:20px;">Sin entregas registradas.</td></tr>';return;}
-  tb.innerHTML=data.map(r=>`<tr><td>${r.fecha}</td><td>${corralesList.find(c=>c.id===r.corral_id)?.nombre||'—'}</td><td>${r.numero_suministro}°</td><td>${r.ingrediente}</td><td>${r.bolsas}</td><td>${r.kg_bolsa} kg</td><td style="color:var(--acc2)">${r.total_kg} kg</td><td>$${r.precio_kg}</td><td style="color:var(--acc)">$${r.costo_total}</td><td>${r.operario||'—'}</td></tr>`).join('');
-}
-function calcRacionModal(){
-  const b=parseFloat(document.getElementById('r-bolsas').value)||0;
-  const k=parseFloat(document.getElementById('r-kgbolsa').value)||0;
-  const p=parseFloat(document.getElementById('r-precio').value)||0;
-  document.getElementById('r-totkg').textContent=b*k;
-  document.getElementById('r-totcosto').textContent='$'+(b*k*p).toFixed(2);
-}
-async function guardarRacion(){
-  const b=parseFloat(document.getElementById('r-bolsas').value)||0;
-  const k=parseFloat(document.getElementById('r-kgbolsa').value)||0;
-  const p=parseFloat(document.getElementById('r-precio').value)||0;
-  const obj={corral_id:document.getElementById('r-corral').value,fecha:document.getElementById('r-fecha').value,hora:document.getElementById('r-hora').value,numero_suministro:parseInt(document.getElementById('r-suministro').value),ingrediente:document.getElementById('r-ingrediente').value,bolsas:b,kg_bolsa:k,total_kg:b*k,precio_kg:p,costo_total:parseFloat((b*k*p).toFixed(2)),operario:document.getElementById('r-operario').value,observaciones:document.getElementById('r-obs').value};
-  await sb.from('raciones_entregas').insert(obj);
-  closeModal('modal-racion');loadRaciones();
-}
-
-// PESOS
-async function loadPesos(){
-  const {data}=await sb.from('pesos').select('*').order('created_at',{ascending:false}).limit(50);
-  const tb=document.getElementById('tabla-pesos');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Sin pesos registrados.</td></tr>';return;}
-  tb.innerHTML=data.map(p=>`<tr><td class="mono">${p.caravana}</td><td><span class="chip chip-b">${p.tipo}</span></td><td>${p.fecha}</td><td style="color:var(--acc2)">${p.peso} kg</td><td>${p.condicion_corporal||'—'}</td><td>${p.observaciones||'—'}</td></tr>`).join('');
-}
-async function guardarPeso(){
-  const obj={caravana:document.getElementById('p-caravana').value,tipo:document.getElementById('p-tipo').value,fecha:document.getElementById('p-fecha').value,peso:parseFloat(document.getElementById('p-peso').value)||null,condicion_corporal:parseInt(document.getElementById('p-cc').value)||null,observaciones:document.getElementById('p-obs').value};
-  await sb.from('pesos').insert(obj);
-  closeModal('modal-peso');loadPesos();
-}
-
-// TEMPERATURA
-async function loadTemp(){
-  const {data}=await sb.from('temperatura').select('*').eq('establecimiento_id',estabId).order('fecha',{ascending:false}).limit(30);
-  const tb=document.getElementById('tabla-temp');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">Sin registros de temperatura.</td></tr>';return;}
-  tb.innerHTML=data.map(t=>{
-    const ec=t.estres_calorico==='Sin estrés'?'chip-g':t.estres_calorico==='Estrés leve'?'chip-y':'chip-r';
-    return`<tr><td>${t.fecha}</td><td style="color:var(--red)">${t.temp_max}°C</td><td style="color:var(--blue)">${t.temp_min}°C</td><td>${t.humedad||'—'}%</td><td><span class="chip ${ec}">${t.estres_calorico}</span></td><td>${t.observaciones||'—'}</td><td>${t.operario||'—'}</td></tr>`;
-  }).join('');
-}
-async function guardarTemp(){
-  const obj={establecimiento_id:estabId,fecha:document.getElementById('t-fecha').value,temp_max:parseFloat(document.getElementById('t-max').value)||null,temp_min:parseFloat(document.getElementById('t-min').value)||null,humedad:parseFloat(document.getElementById('t-humedad').value)||null,estres_calorico:document.getElementById('t-estres').value,observaciones:document.getElementById('t-obs').value,operario:document.getElementById('t-operario').value};
-  await sb.from('temperatura').insert(obj);
-  closeModal('modal-temp');loadTemp();
-}
-
-// DIETAS
-async function loadDietas(){
-  const {data}=await sb.from('dietas').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
-  const tb=document.getElementById('tabla-dietas');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px;">Sin dietas registradas.</td></tr>';return;}
-  tb.innerHTML=data.map(d=>`<tr><td>${d.nombre}</td><td>${d.fecha_vigencia||'—'}</td><td>${d.motivo_cambio||'—'}</td><td><span class="chip ${d.activa?'chip-g':'chip-r'}">${d.activa?'Activa':'Inactiva'}</span></td></tr>`).join('');
-}
-async function guardarDieta(){
-  const obj={establecimiento_id:estabId,nombre:document.getElementById('d-nombre').value,fecha_vigencia:document.getElementById('d-fecha').value,motivo_cambio:document.getElementById('d-motivo').value,activa:true};
-  await sb.from('dietas').insert(obj);
-  closeModal('modal-dieta');loadDietas();
-}
-
-// SANIDAD
-async function loadSanidad(){
-  const {data}=await sb.from('sanidad').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
-  const tb=document.getElementById('tabla-sanidad');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:20px;">Sin eventos sanitarios.</td></tr>';return;}
-  tb.innerHTML=data.map(s=>{
-    const ec=s.estado==='Completo'?'chip-g':s.estado==='En tratamiento'?'chip-y':'chip-r';
-    return`<tr><td>${s.fecha}</td><td class="mono">${s.caravanas||'—'}</td><td>${s.tipo_evento}</td><td>${s.remedio_nombre||'—'}</td><td>${s.dosis||'—'}</td><td>${s.via||'—'}</td><td>${s.operario||'—'}</td><td><span class="chip ${ec}">${s.estado}</span></td></tr>`;
-  }).join('');
-}
-async function loadRemediosSelect(){
-  const {data}=await sb.from('remedios').select('*').eq('establecimiento_id',estabId);
-  const el=document.getElementById('s-remedio');
-  if(!el)return;
-  el.innerHTML='<option value="">Seleccionar...</option>';
-  (data||[]).forEach(r=>{el.innerHTML+=`<option value="${r.id}" data-nombre="${r.nombre}">${r.nombre}</option>`;});
-}
-async function guardarSanidad(){
-  const remEl=document.getElementById('s-remedio');
-  const remNombre=remEl.options[remEl.selectedIndex]?.dataset?.nombre||'';
-  const obj={establecimiento_id:estabId,corral_id:document.getElementById('s-corral').value,fecha:document.getElementById('s-fecha').value,caravanas:document.getElementById('s-caravanas').value,tipo_evento:document.getElementById('s-tipo').value,remedio_id:remEl.value||null,remedio_nombre:remNombre,dosis:document.getElementById('s-dosis').value,via:document.getElementById('s-via').value,operario:document.getElementById('s-operario').value,estado:document.getElementById('s-estado').value,observaciones:document.getElementById('s-obs').value};
-  await sb.from('sanidad').insert(obj);
-  closeModal('modal-sanidad');loadSanidad();
-}
-
-// REMEDIOS
-async function loadRemedios(){
-  const {data}=await sb.from('remedios').select('*').eq('establecimiento_id',estabId).order('nombre');
-  const tb=document.getElementById('tabla-remedios');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Sin remedios. Agregá el primero.</td></tr>';return;}
-  tb.innerHTML=data.map(r=>{
-    const bajo=r.stock_minimo&&r.stock<=r.stock_minimo;
-    return`<tr><td><b>${r.nombre}</b></td><td>${r.tipo}</td><td>${r.stock}</td><td>${r.unidad||'—'}</td><td>${r.vencimiento||'—'}</td><td><span class="chip ${bajo?'chip-r':'chip-g'}">${bajo?'⚠ Bajo':'✓ OK'}</span></td></tr>`;
-  }).join('');
-}
-async function guardarRemedio(){
-  const obj={establecimiento_id:estabId,nombre:document.getElementById('rem-nombre').value,principio_activo:document.getElementById('rem-principio').value,tipo:document.getElementById('rem-tipo').value,via_uso:document.getElementById('rem-via').value,stock:parseFloat(document.getElementById('rem-stock').value)||0,unidad:document.getElementById('rem-unidad').value,vencimiento:document.getElementById('rem-venc').value,stock_minimo:parseFloat(document.getElementById('rem-minimo').value)||null};
-  await sb.from('remedios').insert(obj);
-  closeModal('modal-remedio');loadRemedios();loadRemediosSelect();
-}
-
-// PROVEEDORES
-async function loadProveedores(){
-  const {data}=await sb.from('proveedores').select('*').eq('establecimiento_id',estabId).order('nombre');
-  const tb=document.getElementById('tabla-proveedores');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px;">Sin proveedores.</td></tr>';return;}
-  tb.innerHTML=data.map(p=>`<tr><td><b>${p.nombre}</b></td><td>${p.rubro||'—'}</td><td>${p.telefono||'—'}</td><td>${p.email||'—'}</td></tr>`).join('');
-}
-async function guardarProveedor(){
-  const obj={establecimiento_id:estabId,nombre:document.getElementById('pv-nombre').value,rubro:document.getElementById('pv-rubro').value,telefono:document.getElementById('pv-tel').value,email:document.getElementById('pv-email').value};
-  await sb.from('proveedores').insert(obj);
-  closeModal('modal-proveedor');loadProveedores();
-}
-
-// JORNALES
-async function loadJornales(){
-  const {data}=await sb.from('jornales').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
-  const tb=document.getElementById('tabla-jornales');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Sin jornales registrados.</td></tr>';return;}
-  tb.innerHTML=data.map(j=>`<tr><td>${j.operario}</td><td>${j.categoria}</td><td>${j.mes}</td><td>${j.dias_trabajados}</td><td>$${j.jornal_dia}</td><td style="color:var(--acc)"><b>$${j.total}</b></td></tr>`).join('');
-}
-function calcJornal(){
-  const d=parseFloat(document.getElementById('j-dias').value)||0;
-  const j=parseFloat(document.getElementById('j-jornal').value)||0;
-  document.getElementById('j-total').value='$'+(d*j).toFixed(2);
-}
-async function guardarJornal(){
-  const d=parseFloat(document.getElementById('j-dias').value)||0;
-  const j=parseFloat(document.getElementById('j-jornal').value)||0;
-  const obj={establecimiento_id:estabId,operario:document.getElementById('j-operario').value,categoria:document.getElementById('j-categoria').value,mes:document.getElementById('j-mes').value,dias_trabajados:d,jornal_dia:j,total:d*j};
-  await sb.from('jornales').insert(obj);
-  closeModal('modal-jornal');loadJornales();
-}
-
-// TAREAS
-async function loadTareas(){
-  const {data}=await sb.from('tareas').select('*').eq('establecimiento_id',estabId).order('fecha');
-  const tb=document.getElementById('tabla-tareas');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Sin tareas programadas.</td></tr>';return;}
-  tb.innerHTML=data.map(t=>{
-    const ec=t.estado==='pendiente'?'chip-y':t.prioridad==='Urgente'?'chip-r':'chip-g';
-    return`<tr><td>${t.fecha}</td><td>${t.titulo}</td><td><span class="chip chip-b">${t.tipo}</span></td><td>${corralesList.find(c=>c.id===t.corral_id)?.nombre||'Todos'}</td><td>${t.responsable||'—'}</td><td><span class="chip ${ec}">${t.estado}</span></td></tr>`;
-  }).join('');
-}
-async function guardarTarea(){
-  const obj={establecimiento_id:estabId,titulo:document.getElementById('ta-titulo').value,tipo:document.getElementById('ta-tipo').value,fecha:document.getElementById('ta-fecha').value,corral_id:document.getElementById('ta-corral').value||null,responsable:document.getElementById('ta-responsable').value,prioridad:document.getElementById('ta-prioridad').value,estado:'pendiente'};
-  await sb.from('tareas').insert(obj);
-  closeModal('modal-tarea');loadTareas();
-}
-
-// NAV
-const pageLoaders={dashboard:()=>{loadDashboard();},animales:()=>{loadAnimales();},corral:()=>{loadCorral();},raciones:()=>{loadRaciones();},pesos:()=>{loadPesos();},temperatura:()=>{loadTemp();},dietas:()=>{loadDietas();},sanidad:()=>{loadSanidad();loadRemediosSelect();},remedios:()=>{loadRemedios();},proveedores:()=>{loadProveedores();},costos:()=>{loadJornales();},calendario:()=>{loadTareas();}};
-const pageTitles={dashboard:'Dashboard',animales:'Animales',corral:'Control de Corral',raciones:'Raciones',pesos:'Control de Pesos',temperatura:'Temperatura',dietas:'Dietas',sanidad:'Sanidad',remedios:'Remedios',proveedores:'Proveedores',costos:'Costos',calendario:'Calendario'};
-function nav(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  el.classList.add('active');
-  document.getElementById('topbar-title').textContent=pageTitles[id]||id;
-  if(pageLoaders[id])pageLoaders[id]();
-  closeSidebar();
-}
-
-// SIDEBAR MOBILE
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('open');}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
-
-// MODALES
-function openModal(id){
-  document.getElementById(id).classList.add('open');
-  const today=new Date().toISOString().split('T')[0];
-  const now=new Date().toTimeString().slice(0,5);
-  ['a-fecha','c-fecha','r-fecha','p-fecha','t-fecha','d-fecha','s-fecha','ta-fecha'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=today;});
-  ['c-hora','r-hora'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=now;});
-}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
-</script>
-</body>
-</html>
 <script>
 const SURL='https://lzpgaxnwaegnaungrxlw.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6cGdheG53YWVnbmF1bmdyeGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjQwNzIsImV4cCI6MjA5MTc0MDA3Mn0.WQZrQF7XgMWfuK8uDIlnkG7Co3mtMxmz-RtP_XzSmb4';
@@ -1097,34 +493,24 @@ async function showApp(){
   checkAlertas();
 }
 
-// ESTABLECIMIENTOS
 async function loadEstab(){
   const {data}=await sb.from('establecimientos').select('*');
   if(data&&data.length){
-    estabId=data[0].id;
-    estabNombre=data[0].nombre;
-    updateEstabUI(data[0]);
+    estabId=data[0].id;estabNombre=data[0].nombre;
+    document.getElementById('sw-estab-name').textContent=data[0].nombre;
+    document.getElementById('sb-estab-name').textContent=data[0].nombre;
+    document.getElementById('sb-estab-detail').textContent=data[0].provincia||'';
   }
   await loadCorrales();
-  // llenar select cierre
   const sel=document.getElementById('cierre-estab');
-  sel.innerHTML='<option value="">Actual</option>';
-  (data||[]).forEach(e=>{sel.innerHTML+=`<option value="${e.id}">${e.nombre}</option>`;});
-}
-function updateEstabUI(e){
-  document.getElementById('sb-estab-name').textContent=e.nombre;
-  document.getElementById('sb-estab-detail').textContent=e.provincia||'';
-  document.getElementById('sb-estab-name2').textContent=e.nombre;
-  document.getElementById('sb-estab-detail2').textContent=e.provincia||'';
+  if(sel){sel.innerHTML='<option value="">Actual</option>';(data||[]).forEach(e=>{sel.innerHTML+=`<option value="${e.id}">${e.nombre}</option>`;});}
 }
 async function loadCorrales(){
   if(!estabId)return;
   const {data}=await sb.from('corrales').select('*').eq('establecimiento_id',estabId);
   corralesList=data||[];
-  const selects=['a-corral','c-corral','r-corral','s-corral','d-corral','co-corral','ta-corral','cierre-corral','filtro-costo-corral'];
-  selects.forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
+  ['a-corral','c-corral','r-corral','s-corral','d-corral','co-corral','ta-corral','cierre-corral','filtro-costo-corral'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
     const isFilter=id.includes('filtro')||id.includes('cierre');
     el.innerHTML=isFilter?'<option value="">Todos</option>':'<option value="">Seleccionar...</option>';
     corralesList.forEach(c=>{el.innerHTML+=`<option value="${c.id}">${c.nombre}${c.lote?' — '+c.lote:''}</option>`;});
@@ -1135,20 +521,18 @@ async function abrirEstablecimientos(){
   const lista=document.getElementById('lista-establecimientos');
   lista.innerHTML=(data||[]).map(e=>`
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div>
-        <div style="font-size:13px;font-weight:600;color:${e.id===estabId?'var(--acc2)':'var(--text)'}">${e.nombre}${e.id===estabId?' ✓':''}</div>
-        <div style="font-size:11px;color:var(--text3)">${e.provincia||''} ${e.localidad||''}</div>
-      </div>
+      <div><div style="font-size:13px;font-weight:600;color:${e.id===estabId?'var(--acc2)':'var(--text)'}">${e.nombre}${e.id===estabId?' ✓':''}</div>
+      <div style="font-size:11px;color:var(--text3)">${e.provincia||''} ${e.localidad||''}</div></div>
       <button class="btn btn-ghost btn-sm" onclick="switchEstab('${e.id}','${e.nombre}','${e.provincia||''}','${e.localidad||''}')">Ir</button>
     </div>`).join('');
-  openModal('modal-establecimientos');
 }
 async function switchEstab(id,nombre,provincia,localidad){
   estabId=id;estabNombre=nombre;
-  updateEstabUI({nombre,provincia,localidad});
+  document.getElementById('sw-estab-name').textContent=nombre;
+  document.getElementById('sb-estab-name').textContent=nombre;
+  document.getElementById('sb-estab-detail').textContent=provincia||'';
   await loadCorrales();
-  loadDashboard();
-  checkAlertas();
+  loadDashboard();checkAlertas();
   closeModal('modal-establecimientos');
   nav('dashboard',document.querySelector('.nav-btn'));
 }
@@ -1161,54 +545,39 @@ async function crearEstablecimiento(){
   const {data,error}=await sb.from('establecimientos').insert({nombre,provincia,localidad,responsable}).select();
   if(!error&&data){
     await switchEstab(data[0].id,data[0].nombre,data[0].provincia||'',data[0].localidad||'');
-    document.getElementById('ne-nombre').value='';
-    document.getElementById('ne-provincia').value='';
-    document.getElementById('ne-localidad').value='';
-    document.getElementById('ne-responsable').value='';
+    ['ne-nombre','ne-provincia','ne-localidad','ne-responsable'].forEach(id=>{document.getElementById(id).value='';});
   }
 }
 async function guardarCorralNuevo(){
   const obj={establecimiento_id:estabId,nombre:document.getElementById('nc-nombre').value,lote:document.getElementById('nc-lote').value,capacidad:parseInt(document.getElementById('nc-capacidad').value)||null};
   await sb.from('corrales').insert(obj);
-  closeModal('modal-nuevo-corral');
-  await loadCorrales();
-  loadCorralesPage();
+  closeModal('modal-nuevo-corral');await loadCorrales();loadCorralesPage();
 }
 
-// ALERTAS
 async function checkAlertas(){
   let alertas=[];
-  // Remedios stock bajo
   const {data:rems}=await sb.from('remedios').select('*').eq('establecimiento_id',estabId);
   (rems||[]).forEach(r=>{
-    if(r.stock_minimo&&r.stock<=r.stock_minimo)alertas.push({tipo:'remedio',msg:`⚠️ ${r.nombre}: stock bajo (${r.stock} ${r.unidad||'unidades'})`});
-    if(r.vencimiento){const d=new Date(r.vencimiento);const diff=Math.ceil((d-new Date())/86400000);if(diff<=30&&diff>0)alertas.push({tipo:'vencimiento',msg:`⏰ ${r.nombre}: vence en ${diff} días`});}
+    if(r.stock_minimo&&r.stock<=r.stock_minimo)alertas.push(`⚠️ ${r.nombre}: stock bajo (${r.stock} ${r.unidad||'unidades'})`);
+    if(r.vencimiento){const diff=Math.ceil((new Date(r.vencimiento)-new Date())/86400000);if(diff<=30&&diff>0)alertas.push(`⏰ ${r.nombre}: vence en ${diff} días`);}
   });
-  // Bebedero crítico
   const {data:ctrl}=await sb.from('control_corral').select('*').order('created_at',{ascending:false}).limit(20);
   (ctrl||[]).forEach(c=>{
-    if(c.nivel_bebedero&&c.nivel_bebedero<25)alertas.push({tipo:'bebedero',msg:`💧 ${corralesList.find(x=>x.id===c.corral_id)?.nombre||'Corral'}: bebedero crítico ${c.nivel_bebedero}%`});
-    if(c.estado_bebedero==='Sucia')alertas.push({tipo:'bebedero',msg:`🚨 ${corralesList.find(x=>x.id===c.corral_id)?.nombre||'Corral'}: bebedero sucio`});
+    if(c.nivel_bebedero&&c.nivel_bebedero<25)alertas.push(`💧 ${corralesList.find(x=>x.id===c.corral_id)?.nombre||'Corral'}: bebedero crítico ${c.nivel_bebedero}%`);
+    if(c.estado_bebedero==='Sucia')alertas.push(`🚨 ${corralesList.find(x=>x.id===c.corral_id)?.nombre||'Corral'}: bebedero sucio`);
   });
   document.getElementById('badge-alertas').textContent=alertas.length;
   document.getElementById('kpi-alertas').textContent=alertas.length;
-  const div=document.getElementById('dashboard-alertas');
-  div.innerHTML=alertas.slice(0,3).map(a=>`<div class="alert alert-y">⚠️ <span>${a.msg}</span></div>`).join('');
+  document.getElementById('dashboard-alertas').innerHTML=alertas.slice(0,3).map(a=>`<div class="alert alert-y">⚠️ <span>${a}</span></div>`).join('');
   const lista=document.getElementById('lista-alertas');
-  if(lista){
-    if(!alertas.length){lista.innerHTML='<div class="alert alert-g">✅ Sin alertas activas</div>';return;}
-    lista.innerHTML=alertas.map(a=>`<div class="alert alert-y">⚠️ <span>${a.msg}</span></div>`).join('');
-  }
+  if(lista)lista.innerHTML=alertas.length?alertas.map(a=>`<div class="alert alert-y">⚠️ <span>${a}</span></div>`).join(''):'<div class="alert alert-g">✅ Sin alertas activas</div>';
 }
 
-// DASHBOARD
 async function loadDashboard(){
   if(!estabId)return;
   const {count:ca}=await sb.from('animales').select('*',{count:'exact',head:true}).eq('establecimiento_id',estabId).eq('estado','activo');
   document.getElementById('kpi-animales').textContent=ca||0;
   document.getElementById('kpi-corrales').textContent=corralesList.length;
-  const now=new Date();
-  const mes=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   const {count:cs}=await sb.from('sanidad').select('*',{count:'exact',head:true}).eq('establecimiento_id',estabId);
   document.getElementById('kpi-sanidad').textContent=cs||0;
   const {data:animales}=await sb.from('animales').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false}).limit(5);
@@ -1221,42 +590,28 @@ async function loadDashboard(){
   tc.innerHTML=lect.map(l=>`<tr><td>${l.fecha}</td><td>${corralesList.find(c=>c.id===l.corral_id)?.nombre||'—'}</td><td>${l.clasificacion_bosta||'—'}</td><td>${l.estado_bebedero||'—'}</td><td>${l.operario||'—'}</td></tr>`).join('');
 }
 
-// CORRALES PAGE
 async function loadCorralesPage(){
   const lista=document.getElementById('lista-corrales');
   if(!corralesList.length){lista.innerHTML='<div class="alert alert-b">ℹ️ No tenés corrales. Creá el primero.</div>';return;}
-  lista.innerHTML=corralesList.map(c=>`
-    <div class="card" style="margin-bottom:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">${c.nombre}</div>
-          <div style="font-size:12px;color:var(--text3);">${c.lote||''} · Cap: ${c.capacidad||'—'} animales</div>
-        </div>
-        <span class="chip chip-g">Activo</span>
-      </div>
-    </div>`).join('');
+  lista.innerHTML=corralesList.map(c=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:700;">${c.nombre}</div><div style="font-size:12px;color:var(--text3);">${c.lote||''} · Cap: ${c.capacidad||'—'}</div></div><span class="chip chip-g">Activo</span></div></div>`).join('');
 }
 
-// ANIMALES
 async function loadAnimales(){
   const {data}=await sb.from('animales').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
   const tb=document.getElementById('tabla-animales');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:16px;">Sin animales. Agregá el primero.</td></tr>';return;}
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:16px;">Sin animales.</td></tr>';return;}
   const today=new Date();
   tb.innerHTML=data.map(a=>{
     const dias=a.fecha_compra?Math.ceil((today-new Date(a.fecha_compra))/86400000):0;
-    const gpd=a.peso_entrada&&a.peso_obj_venta&&dias>0?((a.peso_obj_venta-a.peso_entrada)/dias).toFixed(2):'—';
-    const carencia=a.carencia_hasta?`<span class="chip chip-r">⏱ ${a.carencia_hasta}</span>`:'—';
-    return`<tr><td class="mono">${a.caravana}</td><td>${corralesList.find(c=>c.id===a.corral_id)?.nombre||'—'}</td><td>${a.fecha_compra||'—'}</td><td>${a.peso_entrada||'—'} kg</td><td>$${a.precio_kg||'—'}</td><td>${dias}</td><td style="color:var(--acc)">${gpd}</td><td>${carencia}</td><td><span class="chip chip-g">${a.estado}</span></td></tr>`;
+    return`<tr><td class="mono">${a.caravana}</td><td>${corralesList.find(c=>c.id===a.corral_id)?.nombre||'—'}</td><td>${a.fecha_compra||'—'}</td><td>${a.peso_entrada||'—'} kg</td><td>$${a.precio_kg||'—'}</td><td>${dias}</td><td><span class="chip chip-g">${a.estado}</span></td></tr>`;
   }).join('');
 }
 async function guardarAnimal(){
-  const obj={establecimiento_id:estabId,caravana:document.getElementById('a-caravana').value,corral_id:document.getElementById('a-corral').value,fecha_compra:document.getElementById('a-fecha').value,proveedor:document.getElementById('a-proveedor').value,peso_entrada:parseFloat(document.getElementById('a-peso').value)||null,precio_kg:parseFloat(document.getElementById('a-precio').value)||null,categoria:document.getElementById('a-categoria').value,raza:document.getElementById('a-raza').value,peso_obj_venta:parseFloat(document.getElementById('a-peso-obj').value)||null,gpd_esperado:parseFloat(document.getElementById('a-gpd-esp').value)||null,estado:'activo'};
+  const obj={establecimiento_id:estabId,caravana:document.getElementById('a-caravana').value,corral_id:document.getElementById('a-corral').value,fecha_compra:document.getElementById('a-fecha').value,proveedor:document.getElementById('a-proveedor').value,peso_entrada:parseFloat(document.getElementById('a-peso').value)||null,precio_kg:parseFloat(document.getElementById('a-precio').value)||null,categoria:document.getElementById('a-categoria').value,raza:document.getElementById('a-raza').value,estado:'activo'};
   await sb.from('animales').insert(obj);
   closeModal('modal-animal');loadAnimales();loadDashboard();
 }
 
-// CORRAL
 async function loadCorral(){
   const {data}=await sb.from('control_corral').select('*').order('created_at',{ascending:false}).limit(50);
   const tb=document.getElementById('tabla-corral');
@@ -1275,7 +630,6 @@ async function guardarCorral(){
   closeModal('modal-corral');loadCorral();checkAlertas();
 }
 
-// RACIONES
 async function loadRaciones(){
   const {data}=await sb.from('raciones_entregas').select('*').order('created_at',{ascending:false}).limit(50);
   const tb=document.getElementById('tabla-raciones');
@@ -1298,12 +652,11 @@ async function guardarRacion(){
   closeModal('modal-racion');loadRaciones();
 }
 
-// PESOS
 async function loadPesos(){
   const {data}=await sb.from('pesos').select('*').order('created_at',{ascending:false}).limit(50);
   const tb=document.getElementById('tabla-pesos');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:16px;">Sin pesos.</td></tr>';return;}
-  tb.innerHTML=data.map(p=>`<tr><td class="mono">${p.caravana}</td><td><span class="chip chip-b">${p.tipo}</span></td><td>${p.fecha}</td><td style="color:var(--acc2)">${p.peso} kg</td><td>${p.condicion_corporal||'—'}</td><td>—</td><td>${p.observaciones||'—'}</td></tr>`).join('');
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:16px;">Sin pesos.</td></tr>';return;}
+  tb.innerHTML=data.map(p=>`<tr><td class="mono">${p.caravana}</td><td><span class="chip chip-b">${p.tipo}</span></td><td>${p.fecha}</td><td style="color:var(--acc2)">${p.peso} kg</td><td>${p.condicion_corporal||'—'}</td><td>${p.observaciones||'—'}</td></tr>`).join('');
 }
 async function guardarPeso(){
   const obj={caravana:document.getElementById('p-caravana').value,tipo:document.getElementById('p-tipo').value,fecha:document.getElementById('p-fecha').value,peso:parseFloat(document.getElementById('p-peso').value)||null,condicion_corporal:parseInt(document.getElementById('p-cc').value)||null,observaciones:document.getElementById('p-obs').value};
@@ -1311,14 +664,13 @@ async function guardarPeso(){
   closeModal('modal-peso');loadPesos();
 }
 
-// TEMPERATURA
 async function loadTemp(){
   const {data}=await sb.from('temperatura').select('*').eq('establecimiento_id',estabId).order('fecha',{ascending:false}).limit(30);
   const tb=document.getElementById('tabla-temp');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:16px;">Sin registros.</td></tr>';return;}
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:16px;">Sin registros.</td></tr>';return;}
   tb.innerHTML=data.map(t=>{
     const ec=t.estres_calorico==='Sin estrés'?'chip-g':t.estres_calorico==='Estrés leve'?'chip-y':'chip-r';
-    return`<tr><td>${t.fecha}</td><td style="color:var(--red)">${t.temp_max}°C</td><td style="color:var(--blue)">${t.temp_min}°C</td><td>${t.humedad||'—'}%</td><td><span class="chip ${ec}">${t.estres_calorico}</span></td><td>${t.observaciones||'—'}</td><td>${t.operario||'—'}</td></tr>`;
+    return`<tr><td>${t.fecha}</td><td style="color:var(--red)">${t.temp_max}°C</td><td style="color:var(--blue)">${t.temp_min}°C</td><td>${t.humedad||'—'}%</td><td><span class="chip ${ec}">${t.estres_calorico}</span></td><td>${t.observaciones||'—'}</td></tr>`;
   }).join('');
 }
 async function guardarTemp(){
@@ -1327,7 +679,6 @@ async function guardarTemp(){
   closeModal('modal-temp');loadTemp();
 }
 
-// DIETAS
 async function loadDietas(){
   const {data}=await sb.from('dietas_corral').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
   const tb=document.getElementById('tabla-dietas');
@@ -1340,14 +691,13 @@ async function guardarDieta(){
   closeModal('modal-dieta');loadDietas();
 }
 
-// SANIDAD
 async function loadSanidad(){
   const {data}=await sb.from('sanidad').select('*').eq('establecimiento_id',estabId).order('created_at',{ascending:false});
   const tb=document.getElementById('tabla-sanidad');
-  if(!data||!data.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:16px;">Sin eventos.</td></tr>';return;}
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:16px;">Sin eventos.</td></tr>';return;}
   tb.innerHTML=data.map(s=>{
     const ec=s.estado==='Completo'?'chip-g':s.estado==='En tratamiento'?'chip-y':'chip-r';
-    return`<tr><td>${s.fecha}</td><td class="mono">${s.caravanas||'—'}</td><td>${s.tipo_evento}</td><td>${s.remedio_nombre||'—'}</td><td>${s.dosis||'—'}</td><td>${s.via||'—'}</td><td>${s.carencia_dias?s.carencia_dias+' días':'—'}</td><td>${s.operario||'—'}</td><td><span class="chip ${ec}">${s.estado}</span></td></tr>`;
+    return`<tr><td>${s.fecha}</td><td class="mono">${s.caravanas||'—'}</td><td>${s.tipo_evento}</td><td>${s.remedio_nombre||'—'}</td><td>${s.dosis||'—'}</td><td>${s.via||'—'}</td><td>${s.carencia_dias?s.carencia_dias+' días':'—'}</td><td><span class="chip ${ec}">${s.estado}</span></td></tr>`;
   }).join('');
 }
 async function loadRemediosSelect(){
@@ -1361,15 +711,11 @@ async function guardarSanidad(){
   const remEl=document.getElementById('s-remedio');
   const remNombre=remEl.options[remEl.selectedIndex]?.dataset?.nombre||'';
   const carencia=parseInt(remEl.options[remEl.selectedIndex]?.dataset?.carencia||0);
-  const fecha=document.getElementById('s-fecha').value;
-  let caranciaHasta=null;
-  if(carencia&&fecha){const d=new Date(fecha);d.setDate(d.getDate()+carencia);caranciaHasta=d.toISOString().split('T')[0];}
-  const obj={establecimiento_id:estabId,corral_id:document.getElementById('s-corral').value,fecha,caravanas:document.getElementById('s-caravanas').value,tipo_evento:document.getElementById('s-tipo').value,remedio_id:remEl.value||null,remedio_nombre:remNombre,dosis:document.getElementById('s-dosis').value,via:document.getElementById('s-via').value,operario:document.getElementById('s-operario').value,estado:document.getElementById('s-estado').value,observaciones:document.getElementById('s-obs').value,carencia_dias:carencia,carancia_hasta:caranciaHasta};
+  const obj={establecimiento_id:estabId,corral_id:document.getElementById('s-corral').value,fecha:document.getElementById('s-fecha').value,caravanas:document.getElementById('s-caravanas').value,tipo_evento:document.getElementById('s-tipo').value,remedio_id:remEl.value||null,remedio_nombre:remNombre,dosis:document.getElementById('s-dosis').value,via:document.getElementById('s-via').value,operario:document.getElementById('s-operario').value,estado:document.getElementById('s-estado').value,observaciones:document.getElementById('s-obs').value,carencia_dias:carencia};
   await sb.from('sanidad').insert(obj);
   closeModal('modal-sanidad');loadSanidad();
 }
 
-// REMEDIOS
 async function loadRemedios(){
   const {data}=await sb.from('remedios').select('*').eq('establecimiento_id',estabId).order('nombre');
   const tb=document.getElementById('tabla-remedios');
@@ -1385,7 +731,6 @@ async function guardarRemedio(){
   closeModal('modal-remedio');loadRemedios();loadRemediosSelect();checkAlertas();
 }
 
-// PROVEEDORES
 async function loadProveedores(){
   const {data}=await sb.from('proveedores').select('*').eq('establecimiento_id',estabId).order('nombre');
   const tb=document.getElementById('tabla-proveedores');
@@ -1398,7 +743,6 @@ async function guardarProveedor(){
   closeModal('modal-proveedor');loadProveedores();
 }
 
-// COSTOS
 async function loadCostos(){
   const corrFiltro=document.getElementById('filtro-costo-corral')?.value||'';
   const mesFiltro=document.getElementById('filtro-costo-mes')?.value||'';
@@ -1411,7 +755,7 @@ async function loadCostos(){
   else{
     tb.innerHTML=data.map(c=>`<tr><td>${c.fecha||'—'}</td><td>${corralesList.find(x=>x.id===c.corral_id)?.nombre||'General'}</td><td>${c.categoria}</td><td>${c.descripcion||'—'}</td><td style="color:var(--acc)">$${c.monto}</td></tr>`).join('');
     const total=data.reduce((s,c)=>s+(c.monto||0),0);
-    document.getElementById('resumen-costos').innerHTML=`<div class="cierre-total" style="margin-bottom:12px;"><span>Total gastos filtrados</span><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--acc);">$${total.toFixed(2)}</span></div>`;
+    document.getElementById('resumen-costos').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surf2);border:1px solid var(--border);border-radius:9px;margin-bottom:12px;"><span style="font-size:12px;color:var(--text2);">Total gastos filtrados</span><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--acc);">$${total.toFixed(2)}</span></div>`;
   }
   loadJornales();
 }
@@ -1439,10 +783,9 @@ async function guardarJornal(){
   closeModal('modal-jornal');loadJornales();
 }
 
-// RENTABILIDAD
 async function loadRentabilidad(){
-  const div=document.getElementById('tabla-rentabilidad');
-  if(!corralesList.length){div.innerHTML='<div class="alert alert-b">ℹ️ Sin corrales configurados.</div>';return;}
+  const div=document.getElementById('div-rentabilidad');
+  if(!corralesList.length){div.innerHTML='<div class="alert alert-b">ℹ️ Sin corrales.</div>';return;}
   let html='';
   for(const corral of corralesList){
     const {data:anim}=await sb.from('animales').select('*').eq('corral_id',corral.id).eq('estado','activo');
@@ -1454,27 +797,11 @@ async function loadRentabilidad(){
     const costoJornales=(jornales||[]).reduce((s,j)=>s+(j.total||0),0)/Math.max(corralesList.length,1);
     const compraAnimales=(anim||[]).reduce((s,a)=>s+((a.peso_entrada||0)*(a.precio_kg||0)),0);
     const totalCosto=costoRaciones+costoOtros+costoJornales+compraAnimales;
-    const pesoTotalEntr=(anim||[]).reduce((s,a)=>s+(a.peso_entrada||0),0);
-    html+=`<div class="card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-        <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;">${corral.nombre}</span>
-        <span class="chip chip-b">${(anim||[]).length} animales</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
-        <div style="color:var(--text3);">Compra animales</div><div style="color:var(--text);text-align:right;">$${compraAnimales.toFixed(0)}</div>
-        <div style="color:var(--text3);">Raciones</div><div style="color:var(--text);text-align:right;">$${costoRaciones.toFixed(0)}</div>
-        <div style="color:var(--text3);">Jornales (prorr.)</div><div style="color:var(--text);text-align:right;">$${costoJornales.toFixed(0)}</div>
-        <div style="color:var(--text3);">Otros gastos</div><div style="color:var(--text);text-align:right;">$${costoOtros.toFixed(0)}</div>
-        <div style="color:var(--text2);font-weight:600;">TOTAL COSTO</div><div style="color:var(--acc);font-weight:700;text-align:right;">$${totalCosto.toFixed(0)}</div>
-        <div style="color:var(--text3);">Peso entrada total</div><div style="color:var(--text);text-align:right;">${pesoTotalEntr} kg</div>
-        <div style="color:var(--text3);">Costo/animal</div><div style="color:var(--text);text-align:right;">$${(anim||[]).length?((totalCosto/(anim||[]).length).toFixed(0)):'—'}</div>
-      </div>
-    </div>`;
+    html+=`<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;">${corral.nombre}</span><span class="chip chip-b">${(anim||[]).length} animales</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;"><div style="color:var(--text3);">Compra animales</div><div style="color:var(--text);text-align:right;">$${compraAnimales.toFixed(0)}</div><div style="color:var(--text3);">Raciones</div><div style="color:var(--text);text-align:right;">$${costoRaciones.toFixed(0)}</div><div style="color:var(--text3);">Jornales (prorr.)</div><div style="color:var(--text);text-align:right;">$${costoJornales.toFixed(0)}</div><div style="color:var(--text3);">Otros gastos</div><div style="color:var(--text);text-align:right;">$${costoOtros.toFixed(0)}</div><div style="color:var(--text2);font-weight:600;">TOTAL COSTO</div><div style="color:var(--acc);font-weight:700;text-align:right;">$${totalCosto.toFixed(0)}</div></div></div>`;
   }
   div.innerHTML=html;
 }
 
-// TAREAS
 async function loadTareas(){
   const {data}=await sb.from('tareas').select('*').eq('establecimiento_id',estabId).order('fecha');
   const tb=document.getElementById('tabla-tareas');
@@ -1490,89 +817,63 @@ async function guardarTarea(){
   closeModal('modal-tarea');loadTareas();
 }
 
-// CIERRE DE CICLO
 async function generarCierre(){
   const desde=document.getElementById('cierre-desde').value;
   const hasta=document.getElementById('cierre-hasta').value;
   const corralId=document.getElementById('cierre-corral').value;
-  // Raciones
   let qr=sb.from('raciones_entregas').select('*').gte('fecha',desde).lte('fecha',hasta);
   if(corralId)qr=qr.eq('corral_id',corralId);
   const {data:raciones}=await qr;
   const totalRaciones=(raciones||[]).reduce((s,r)=>s+(r.costo_total||0),0);
   const kgRaciones=(raciones||[]).reduce((s,r)=>s+(r.total_kg||0),0);
-  // Sanidad
   let qs=sb.from('sanidad').select('*').eq('establecimiento_id',estabId).gte('fecha',desde).lte('fecha',hasta);
   if(corralId)qs=qs.eq('corral_id',corralId);
   const {data:sanidad}=await qs;
-  // Jornales
   const {data:jornales}=await sb.from('jornales').select('*').eq('establecimiento_id',estabId);
   const totalJornales=(jornales||[]).reduce((s,j)=>s+(j.total||0),0);
-  // Animales
   let qa=sb.from('animales').select('*').eq('establecimiento_id',estabId).gte('fecha_compra',desde).lte('fecha_compra',hasta);
   if(corralId)qa=qa.eq('corral_id',corralId);
   const {data:animales}=await qa;
   const totalAnimales=(animales||[]).reduce((s,a)=>s+((a.peso_entrada||0)*(a.precio_kg||0)),0);
-  // Costos
   let qc=sb.from('costos_corral').select('*').eq('establecimiento_id',estabId).gte('fecha',desde).lte('fecha',hasta);
   if(corralId)qc=qc.eq('corral_id',corralId);
   const {data:costos}=await qc;
   const totalOtros=(costos||[]).reduce((s,c)=>s+(c.monto||0),0);
-  // Pesos
-  const {data:pesos}=await sb.from('pesos').select('*').gte('fecha',desde).lte('fecha',hasta);
-  const pesosEntr=(pesos||[]).filter(p=>p.tipo==='entrada');
-  const pesosSal=(pesos||[]).filter(p=>p.tipo==='salida');
-  const promEntr=pesosEntr.length?(pesosEntr.reduce((s,p)=>s+p.peso,0)/pesosEntr.length).toFixed(1):0;
-  const promSal=pesosSal.length?(pesosSal.reduce((s,p)=>s+p.peso,0)/pesosSal.length).toFixed(1):0;
-  const kgGanados=promSal&&promEntr?(promSal-promEntr)*((animales||[]).length||1):0;
   const totalGeneral=totalRaciones+totalJornales+totalAnimales+totalOtros;
-  // UI
   document.getElementById('c-animales').textContent=(animales||[]).length;
-  document.getElementById('c-kg').textContent=kgGanados.toFixed(0)+' kg';
+  document.getElementById('c-kg').textContent=kgRaciones.toFixed(0)+' kg';
   document.getElementById('c-costo').textContent='$'+totalGeneral.toFixed(0);
-  document.getElementById('c-costkg').textContent=kgGanados>0?'$'+(totalGeneral/kgGanados).toFixed(2):'—';
-  document.getElementById('cierre-raciones').innerHTML=`<div class="cierre-row"><span>Total raciones entregadas</span><span style="color:var(--acc2)">${kgRaciones} kg</span></div><div class="cierre-row"><span>Costo total raciones</span><span style="color:var(--acc)">$${totalRaciones.toFixed(2)}</span></div>`;
-  document.getElementById('cierre-sanidad').innerHTML=(sanidad||[]).length?sanidad.map(s=>`<div class="cierre-row"><span>${s.fecha} — ${s.tipo_evento} (${s.remedio_nombre||'sin remedio'})</span><span style="color:var(--text2)">${s.caravanas||'—'}</span></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin eventos sanitarios en el período</div>';
-  document.getElementById('cierre-jornales').innerHTML=(jornales||[]).length?jornales.map(j=>`<div class="cierre-row"><span>${j.operario} — ${j.mes}</span><span style="color:var(--acc)">$${j.total}</span></div>`).join(`<div class="cierre-row" style="font-weight:700"><span>Total jornales</span><span style="color:var(--acc)">$${totalJornales.toFixed(2)}</span></div>`):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin jornales registrados</div>';
-  document.getElementById('cierre-animales').innerHTML=(animales||[]).length?animales.map(a=>`<div class="cierre-row"><span class="mono">${a.caravana}</span><span style="color:var(--text2)">${a.peso_entrada||0}kg × $${a.precio_kg||0} = <span style="color:var(--acc)">$${((a.peso_entrada||0)*(a.precio_kg||0)).toFixed(0)}</span></span></div>`).join(`<div class="cierre-row" style="font-weight:700"><span>Total compra animales</span><span style="color:var(--acc)">$${totalAnimales.toFixed(2)}</span></div>`):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin animales comprados en el período</div>';
-  document.getElementById('cierre-otros').innerHTML=(costos||[]).length?costos.map(c=>`<div class="cierre-row"><span>${c.categoria} — ${c.descripcion||''}</span><span style="color:var(--acc)">$${c.monto}</span></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin otros gastos</div>';
+  document.getElementById('c-costkg').textContent=(animales||[]).length?'$'+(totalGeneral/(animales||[]).length).toFixed(0):'—';
+  document.getElementById('cierre-raciones').innerHTML=`<div class="cierre-row"><span>Total kg raciones</span><span style="color:var(--acc2)">${kgRaciones} kg</span></div><div class="cierre-row"><span>Costo total raciones</span><span style="color:var(--acc)">$${totalRaciones.toFixed(2)}</span></div>`;
+  document.getElementById('cierre-sanidad').innerHTML=(sanidad||[]).length?(sanidad||[]).map(s=>`<div class="cierre-row"><span>${s.fecha} — ${s.tipo_evento} (${s.remedio_nombre||'sin remedio'})</span><span style="color:var(--text2)">${s.caravanas||'—'}</span></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin eventos en el período</div>';
+  document.getElementById('cierre-jornales').innerHTML=(jornales||[]).length?(jornales||[]).map(j=>`<div class="cierre-row"><span>${j.operario} — ${j.mes}</span><span style="color:var(--acc)">$${j.total}</span></div>`).join('')+'<div class="cierre-row" style="font-weight:700"><span>Total jornales</span><span style="color:var(--acc)">$'+totalJornales.toFixed(2)+'</span></div>':'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin jornales</div>';
+  document.getElementById('cierre-animales').innerHTML=(animales||[]).length?(animales||[]).map(a=>`<div class="cierre-row"><span class="mono">${a.caravana}</span><span>${a.peso_entrada||0}kg × $${a.precio_kg||0} = <span style="color:var(--acc)">$${((a.peso_entrada||0)*(a.precio_kg||0)).toFixed(0)}</span></span></div>`).join('')+'<div class="cierre-row" style="font-weight:700"><span>Total compra</span><span style="color:var(--acc)">$'+totalAnimales.toFixed(2)+'</span></div>':'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin animales comprados en el período</div>';
+  document.getElementById('cierre-otros').innerHTML=(costos||[]).length?(costos||[]).map(c=>`<div class="cierre-row"><span>${c.categoria} — ${c.descripcion||''}</span><span style="color:var(--acc)">$${c.monto}</span></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:8px 0">Sin otros gastos</div>';
   document.getElementById('cierre-total-val').textContent='$'+totalGeneral.toFixed(2);
   document.getElementById('cierre-resultado').classList.remove('hidden');
-  // guardar datos para PDF
-  window.cierreData={desde,hasta,totalRaciones,kgRaciones,totalJornales,totalAnimales,totalOtros,totalGeneral,kgGanados,animales:animales||[],sanidad:sanidad||[],jornales:jornales||[],costos:costos||[],raciones:raciones||[]};
+  window.cierreData={desde,hasta,totalRaciones,kgRaciones,totalJornales,totalAnimales,totalOtros,totalGeneral,animales:animales||[],sanidad:sanidad||[],jornales:jornales||[],costos:costos||[],raciones:raciones||[]};
 }
 
-// PDF
 function descargarPDF(){
-  const {jsPDF}=window.jspdf;
+  const{jsPDF}=window.jspdf;
   const doc=new jsPDF();
   const d=window.cierreData;
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(20);
+  doc.setFont('helvetica','bold');doc.setFontSize(20);
   doc.text('GanApp — Cierre de Ciclo',14,20);
-  doc.setFontSize(10);
-  doc.setFont('helvetica','normal');
+  doc.setFont('helvetica','normal');doc.setFontSize(10);
   doc.text(`Establecimiento: ${estabNombre}`,14,30);
   doc.text(`Período: ${d.desde} al ${d.hasta}`,14,36);
   doc.text(`Generado: ${new Date().toLocaleDateString('es-AR')}`,14,42);
   doc.line(14,46,196,46);
-  // KPIs
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(12);
-  doc.text('Resumen general',14,54);
-  doc.autoTable({startY:58,head:[['Concepto','Valor']],body:[['Animales en período',d.animales.length],['Kg totales raciones',d.kgRaciones+' kg'],['Kg ganados estimados',d.kgGanados.toFixed(0)+' kg'],['Costo total','$'+d.totalGeneral.toFixed(2)],['Costo por kg ganado',d.kgGanados>0?'$'+(d.totalGeneral/d.kgGanados).toFixed(2):'—']],styles:{fontSize:10},headStyles:{fillColor:[40,60,15]}});
-  // Desglose
-  doc.autoTable({startY:doc.lastAutoTable.finalY+10,head:[['Categoría','Monto']],body:[['Raciones/Dieta','$'+d.totalRaciones.toFixed(2)],['Jornales','$'+d.totalJornales.toFixed(2)],['Compra animales','$'+d.totalAnimales.toFixed(2)],['Otros gastos','$'+d.totalOtros.toFixed(2)],['TOTAL','$'+d.totalGeneral.toFixed(2)]],styles:{fontSize:10},headStyles:{fillColor:[40,60,15]}});
-  // Animales
-  if(d.animales.length){
-    doc.autoTable({startY:doc.lastAutoTable.finalY+10,head:[['Caravana','Peso entr.','Precio/kg','Costo compra']],body:d.animales.map(a=>[a.caravana,a.peso_entrada+'kg','$'+a.precio_kg,'$'+((a.peso_entrada||0)*(a.precio_kg||0)).toFixed(0)]),styles:{fontSize:9},headStyles:{fillColor:[40,60,15]}});
-  }
-  doc.save(`cierre_ciclo_${estabNombre}_${d.desde}_${d.hasta}.pdf`);
+  doc.autoTable({startY:50,head:[['Concepto','Valor']],body:[['Animales en período',d.animales.length],['Kg totales raciones',d.kgRaciones+' kg'],['Costo total','$'+d.totalGeneral.toFixed(2)],['Costo por animal',d.animales.length?'$'+(d.totalGeneral/d.animales.length).toFixed(2):'—']],styles:{fontSize:10},headStyles:{fillColor:[40,60,15]}});
+  doc.autoTable({startY:doc.lastAutoTable.finalY+8,head:[['Categoría','Monto']],body:[['Raciones/Dieta','$'+d.totalRaciones.toFixed(2)],['Jornales','$'+d.totalJornales.toFixed(2)],['Compra animales','$'+d.totalAnimales.toFixed(2)],['Otros gastos','$'+d.totalOtros.toFixed(2)],['TOTAL','$'+d.totalGeneral.toFixed(2)]],styles:{fontSize:10},headStyles:{fillColor:[40,60,15]}});
+  if(d.animales.length){doc.autoTable({startY:doc.lastAutoTable.finalY+8,head:[['Caravana','Peso entr.','Precio/kg','Costo compra']],body:d.animales.map(a=>[a.caravana,(a.peso_entrada||0)+'kg','$'+(a.precio_kg||0),'$'+((a.peso_entrada||0)*(a.precio_kg||0)).toFixed(0)]),styles:{fontSize:9},headStyles:{fillColor:[40,60,15]}});}
+  doc.save(`cierre_${estabNombre}_${d.desde}_${d.hasta}.pdf`);
 }
 
-// NAV
 const pageLoaders={dashboard:loadDashboard,animales:loadAnimales,alertas:checkAlertas,corrales:loadCorralesPage,corral:loadCorral,raciones:loadRaciones,pesos:loadPesos,temperatura:loadTemp,dietas:loadDietas,sanidad:()=>{loadSanidad();loadRemediosSelect();},remedios:loadRemedios,proveedores:loadProveedores,costos:loadCostos,rentabilidad:loadRentabilidad,calendario:loadTareas,cierre:()=>{}};
-const pageTitles={dashboard:'Dashboard',animales:'Animales',alertas:'Alertas',corrales:'Corrales',corral:'Control de Corral',raciones:'Raciones',pesos:'Control de Pesos',temperatura:'Temperatura',dietas:'Dietas',sanidad:'Sanidad',remedios:'Remedios',proveedores:'Proveedores',costos:'Costos',rentabilidad:'Rentabilidad',calendario:'Calendario',cierre:'Cierre de Ciclo'};
+const pageTitles={dashboard:'Dashboard',animales:'Animales',alertas:'Alertas',corrales:'Corrales',corral:'Control de Corral',raciones:'Raciones',pesos:'Control de Pesos',temperatura:'Temperatura',dietas:'Dietas',sanidad:'Sanidad',remedios:'Remedios',proveedores:'Proveedores',costos:'Costos y Gastos',rentabilidad:'Rentabilidad',calendario:'Calendario',cierre:'Cierre de Ciclo'};
+
 function nav(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -1585,55 +886,17 @@ function nav(id,el){
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
 function openModal(id){
-  if(id==='modal-establecimientos'){abrirEstablecimientos();return;}
+  if(id==='modal-establecimientos'){abrirEstablecimientos();document.getElementById(id).classList.add('open');return;}
   document.getElementById(id).classList.add('open');
   const today=new Date().toISOString().split('T')[0];
   const now=new Date().toTimeString().slice(0,5);
   ['a-fecha','c-fecha','r-fecha','p-fecha','t-fecha','d-fecha','s-fecha','ta-fecha','co-fecha'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=today;});
   ['c-hora','r-hora'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=now;});
   const mes=new Date().toISOString().slice(0,7);
-  ['co-mes'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=mes;});
+  const mel=document.getElementById('co-mes');if(mel&&!mel.value)mel.value=mes;
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});// Agregar al nav los items faltantes
-function fixNav(){
-  const anal=document.querySelector('.nav-btn[onclick*="costos"]');
-  if(!anal)return;
-  const group=anal.closest('.nav-group');
-  if(!group)return;
-  if(!document.querySelector('.nav-btn[onclick*="rentabilidad"]')){
-    group.innerHTML+=`
-    <div class="nav-btn" onclick="nav('rentabilidad',this)"><span class="nav-ico">📈</span>Rentabilidad</div>
-    <div class="nav-btn" onclick="nav('cierre',this)"><span class="nav-ico">📄</span>Cierre de Ciclo</div>
-    <div class="nav-btn" onclick="nav('alertas',this)"><span class="nav-ico">🔔</span>Alertas</div>`;
-  }
-  // Agregar switcher de establecimiento
-  const sidebar=document.getElementById('sidebar');
-  if(sidebar&&!document.querySelector('.estab-switcher')){
-    const brand=sidebar.querySelector('.brand');
-    const switcher=document.createElement('div');
-    switcher.className='estab-switcher';
-    switcher.style.cssText='padding:10px 12px;border-bottom:1px solid var(--border);';
-    switcher.innerHTML=`<div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:5px;">Establecimiento activo</div>
-    <div style="background:var(--surf2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openModal('modal-establecimientos')">
-      <div><div style="font-size:13px;font-weight:600;color:var(--text);" id="sw-estab-name">—</div><div style="font-size:10px;color:var(--text3);">Tocá para cambiar</div></div>
-      <span style="color:var(--text3);">⌄</span>
-    </div>`;
-    brand.after(switcher);
-  }
-}
-// Sobreescribir showApp para llamar fixNav
-const _origShowApp=showApp;
-async function showApp(){
-  await _origShowApp();
-  setTimeout(fixNav,500);
-  setTimeout(()=>{
-    const n=document.getElementById('sw-estab-name');
-    if(n)n.textContent=estabNombre||'—';
-  },1000);
-}
-
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
 </script>
 </body>
 </html>
-
