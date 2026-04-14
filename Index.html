@@ -1595,7 +1595,44 @@ function openModal(id){
   ['co-mes'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=mes;});
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});// Agregar al nav los items faltantes
+function fixNav(){
+  const anal=document.querySelector('.nav-btn[onclick*="costos"]');
+  if(!anal)return;
+  const group=anal.closest('.nav-group');
+  if(!group)return;
+  if(!document.querySelector('.nav-btn[onclick*="rentabilidad"]')){
+    group.innerHTML+=`
+    <div class="nav-btn" onclick="nav('rentabilidad',this)"><span class="nav-ico">📈</span>Rentabilidad</div>
+    <div class="nav-btn" onclick="nav('cierre',this)"><span class="nav-ico">📄</span>Cierre de Ciclo</div>
+    <div class="nav-btn" onclick="nav('alertas',this)"><span class="nav-ico">🔔</span>Alertas</div>`;
+  }
+  // Agregar switcher de establecimiento
+  const sidebar=document.getElementById('sidebar');
+  if(sidebar&&!document.querySelector('.estab-switcher')){
+    const brand=sidebar.querySelector('.brand');
+    const switcher=document.createElement('div');
+    switcher.className='estab-switcher';
+    switcher.style.cssText='padding:10px 12px;border-bottom:1px solid var(--border);';
+    switcher.innerHTML=`<div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:5px;">Establecimiento activo</div>
+    <div style="background:var(--surf2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openModal('modal-establecimientos')">
+      <div><div style="font-size:13px;font-weight:600;color:var(--text);" id="sw-estab-name">—</div><div style="font-size:10px;color:var(--text3);">Tocá para cambiar</div></div>
+      <span style="color:var(--text3);">⌄</span>
+    </div>`;
+    brand.after(switcher);
+  }
+}
+// Sobreescribir showApp para llamar fixNav
+const _origShowApp=showApp;
+async function showApp(){
+  await _origShowApp();
+  setTimeout(fixNav,500);
+  setTimeout(()=>{
+    const n=document.getElementById('sw-estab-name');
+    if(n)n.textContent=estabNombre||'—';
+  },1000);
+}
+
 </script>
 </body>
 </html>
